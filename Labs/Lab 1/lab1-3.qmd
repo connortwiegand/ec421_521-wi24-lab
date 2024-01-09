@@ -1,0 +1,98 @@
+---
+title: "Week 1 Lab"
+subtitle: "Part 3: Markdown and Latex"
+author: "Connor Wiegand"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    # html-math-method: mathjax
+  #  revealjs:
+  #   theme: serif
+  #   preview-links: true
+  #   chalkboard: true
+  #   slide-number: true
+  #   menu:
+  #       side: right
+  #   scrollable: true
+  #   smaller: true
+  #   incremental: true
+  #   slide-level: 3
+
+editor:
+   render-on-save: true
+engine: knitr
+---
+
+# What is Markdown?
+Generally speaking, markdown is a set of standards for formatting text on the internet. It has the advantage of being easy-to-write as well as easy-to-read.  There are many "flavors" of markdown, each with their own special rules and/or syntax, but much of the core syntax stays the same throughtout.
+
+If you've been on reddit.com, you can format your posts/comments using a markdown syntax. For instance,
+
+- `_Fuck_` is rendered as _Fuck_
+- `**Sick**` is rendered as **Sick**
+- `~~Mapajahit~~` is rendered as ~~Mapajahit~~
+- `[this one](https://en.wikipedia.org/wiki/Majapahit)` displays a link like [this one](https://en.wikipedia.org/wiki/Majapahit) to the listed URL
+
+Here is a markdown reference for general use: [MD]().
+
+## RMarkdown
+RMarkdown is a framework that combines the formatting of Markdown with the language of R. RMarkdown documents can be output to HTML, PDF, and more, making it extermely handy for presenting, submitting work, website publishing, and tons of other stuff in the academic and professional world. 
+
+An RMarkdown document, with the file extension `.rmd`, consists of three main components: 
+
+1. Plain text, written in markdown syntax
+2. R code "chunks" -- pieces of R code interlaced throughout your document.
+3. Something called _YAML_
+
+## Chunks
+In RMarkdown, we can use three backticks (\`) to enclose R code that we want displayed and/or run in our document. However, we have to tell the computer what language we want to use, by labelling the first set of backticks with `{r}`. In practice, this looks like
+
+````markdown
+```{{r}}
+x <- data.frame(x = c(1, 2, 3), letters = c("a", "b", "c"))
+x
+```
+````
+You can also name chunks by adding a `space` + `<chunk-name>` after `{r}` (e.g. `{r my-r-chunk-1}`).
+
+## YAML
+
+:::{.callout-note collapse="true"}
+# YAML?
+YAML (you can read about that acronym [here](https://en.wikipedia.org/wiki/YAML#History_and_name)) is a human-readable language for specifying document-level properties. 
+
+Think of it like the dialogue box that pops up when you go to print a document: after specifying a printer, you have some options to toy with. Some you may change, some are set to reasonable defaults. 
+
+YAML is like this dialogue box, but text-based. Specifying the printer is like picking an output type (HTML, PDF, etc.). You can also add a title, use a theme, etc. 
+:::
+
+
+YAML appears at the top of every RMarkdown document. It is enclosed on the top and bottom by three dashes: `---`. 
+
+An exmaple YAML might look like:
+
+```{markdown}
+   ---
+   title: "My Analysis"
+   author: "John Doe"
+   date: "October 9, 2023"
+   output: html_document
+   ---
+```
+
+In this class, the YAML will always be provided for assignments. _You just have to add your name_.
+
+## Knitting
+
+In order to use markdown, we need an engine which can put it together for us.
+
+
+# What is Latex?
+$\LaTeX$ is a collection of type-setting macros. It helps write your math and science textbooks, and is used by numerous scholars and practitioners for creating documents with pretty symbols. 
+
+## What is it's relation to markdown
+
+
+# What is Quarto?

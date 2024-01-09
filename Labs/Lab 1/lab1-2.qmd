@@ -1,0 +1,133 @@
+---
+title: "Week 1 Lab"
+subtitle: "Part 2: All about R"
+author: "Connor Wiegand"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    # html-math-method: mathjax
+  #  revealjs:
+  #   theme: serif
+  #   preview-links: true
+  #   chalkboard: true
+  #   slide-number: true
+  #   menu:
+  #       side: right
+  #   scrollable: true
+  #   smaller: true
+  #   incremental: true
+  #   slide-level: 3
+
+editor:
+   render-on-save: true
+    
+---
+
+# All about R
+
+## A little about R
+
+### Assignment
+We can assign a name to different objects in R, using the notation `LHS <- RHS`^[(Left/Right) Hnad Side]. This way, if RHS is long and complicated, or is the result of another computation or program, we can just say `LHS`, and the computer will know to insert `RHS`. For instance, we can assign x to be the number 2 by running `x <- 2`. To view (aka `print`) x, we simply call it:
+
+```{r ex1}
+x <- 2
+x
+```
+
+### Data Types
+There are many types of data in R. They can be accessed by passing the data to the `class()` function. Let's review a few key types:
+
+```{r ex2}
+class(x)
+class(1+1)
+```
+
+```{r ex3}
+class("string")
+foo <- "bar"
+class(foo)
+```
+
+---
+
+A vector in R is of the form `c(a,b,c,d)`. All of the components of the vector must have the same data type. 
+
+Moreover, "vector" is not a data type in R. The components of the vector determine it's type. 
+```{r ex4}
+my_vec <- c(1,2,4,7)
+class(my_vec)
+```
+
+---
+
+```{r}
+mat <- matrix(1:4, nrow = 2)
+mat
+class(mat)
+```
+
+```{r}
+# A hash mark let's us write comments in our code
+my_df <- as.data.frame(mat)
+class(my_df)
+```
+
+## Packages
+R’s functionality can be extended through packages, which are collections of functions, data sets, and documentation bundled together. 
+
+In order to use a package in R, two things have to be true:
+
+1. The package is installed on your computer
+
+2. You have to load the package into the R _session_
+    - I.e., if you close R, you likely have to re-load the package. 
+
+
+### Ol' Reliable
+The `base` way of managing packages in R is to install them using 
+`install.packages('<package name>')` and load them using `library(<package name>)`. 
+
+:::{.callout-note collapse="true"}
+# `<Notation>`
+By the way, you won't really need to put anything in <> at any point. So, if my name is Connor Wiegand, and I read some form of `<your name>` in a tutorial in this class, I should replace all of `<your name>` with `Connor Wiegand`. That is, 
+
+- `<your name>` = `Connor Wiegand`
+- `'<your name>'` = `'Connor Wiegand'`
+- `"<your name>"` = `"Connor Wiegand"`
+:::
+
+So, if I wanted to use the `dplyr` package for the first time, I would start by running `install.packages("dplyr")`. Then, when I want to use `dplyr` in my session, I run `library(dplyr)`.
+
+::: callout-tip
+You only need to install a package **once**! Then it is on your system. Next time, you don't have to run `install.packages()`, you can just call `library()`. The step of calling `library(<pkg name>)` must be re-done every time you close RStudio. 
+:::
+
+### Pacman
+
+`pacman` is a package manager that has been around for a long time. The `pacman` package in R comes with a number of tools for package management, with the star-pupil being `p_load`. To use this command, you must first install the pacman package the usual way:
+```{r eval=F}
+install.packages("pacman")
+```
+
+Assume we have loaded pacman via `library(pacman)`, but have not loaded or installed any other packages. Then, if I wanted to install _and_ load `dplyr` in one step, I would just run `pacman(dplyr)`. In fact, if I wanted to load 3 commonly used packages at once, I could run 
+```{r eval=F}
+pacman(dplyr, magrittr, ggplot2)
+```
+And all of my packagees would be installed (if they are not already) and loaded into my current session.
+
+::: {.callout-warning collapse=T}
+There are times when installing via `pacman` does some funky things under the hood of your machine. When installing key packages for the first time, I will typically use `install.packages`.
+:::
+
+---
+
+### `<pkg>::<fn>`
+
+In RStudio, typing `<package name>` followed by two colons will pull up a set of available functions from the `<package name>` package. Moreover, if `<pkg-A>` is installed on your machine, you can use `pkg-A::fn()` to access the `fn` function, _regardless of whether or not `pkg-A` is loaded_. That means that, after installing `pacman` for the first time, you can use the syntax
+```{r eval=F}
+pacman::p_load(pkg-A, pkg-B, etc.)
+```
+throughout your various programs to load in a package. 

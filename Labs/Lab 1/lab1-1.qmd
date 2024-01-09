@@ -1,0 +1,75 @@
+---
+title: "Week 1 Lab"
+subtitle: "Part 1: Introduction"
+author: "Connor Wiegand"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    # html-math-method: mathjax
+  #  revealjs:
+  #   theme: serif
+  #   preview-links: true
+  #   chalkboard: true
+  #   slide-number: true
+  #   menu:
+  #       side: right
+  #   scrollable: true
+  #   smaller: true
+  #   incremental: true
+  #   slide-level: 3
+
+editor:
+   render-on-save: true
+    
+---
+
+# Introduction
+
+### What are we doing here?
+
+You signed up for an econometrics course. In the modern era, econometrics is done with the assistance of computer software. The two most common software languages used for econometrics are
+
+- R
+- Stata
+
+Throughout your academic and professional career, you may develop connections with people who do _data science_. In addition to the above languages, they may use select software languages such as Python, Julia, and MatLab (amoungst others). 
+
+While you're lecture time will be focused on learning econometrics, your lab time mainly exists to help improve your skills in **R**.
+
+### Why R?
+Stata costs $200 for a license^[You can access Stata through certain computers on campus, including those in the [Tattersall Computer Lab]() (PLC 410).]. For a long time, Stata would only allow you to import one data set at a time. 
+
+R is [FOSS](https://itsfoss.com/what-is-foss/), which explains why there is so much documentation of it on the web. R is quickly becoming an extremely popular tool for all kinds of data analysis, manipulation, and visualization. 
+
+### How do I get R?
+If you don't have R installed on your computer already (or if you haven't updated it in a while), head over to this link to get R installed. 
+
+- R: [https://cran.r-project.org/](https://cran.r-project.org/)
+
+
+
+### Great, now I have a little box that looks like a command prompt. This is going to help me with cconometrics?
+
+Yeah...kinda. But that window (called a terminal) is ugly as shit. We need to download + install one other tool that is essential to learning R:
+
+- RStudio: [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/)
+
+You can follow this [link](https://learnr-examples.shinyapps.io/ex-setup-r/#section-welcome) to get a video tutorial of how to install **both** R and RStudio.
+
+### Are there alternatives to RStudio?
+At this level, not really. While some other languages may have users over a variety of interfaces (called IDEs), RStudio is the quinessential environment for interacting with R. 
+
+That being said, [VS Code](https://code.visualstudio.com/) from Microsoft^[Though owned by Microsoft, VS Code is not exclusive to Windows] is an application that allows for large number of languages to be run in it. I won't officially go over setting up VS Code, but keep it in your back pocket for the future. 
+
+### By the way, where the hell am I?
+You're on **github**. If you are unfamiliar with github, think of it kind of like twitter for software developers^[...and adjacent people who write code, like econometricians].   
+
+::: {.callout-note collapse=T}
+# A little more about Github
+Sort of like RStudio to R, Github amplifies the user experience and functionality of _Git_. This allows for amazingly tractable _version control_, which is important to developers of all kinds. Basically, it's like a file system with a "view history" feature, and then some.  
+:::
+
+You can keep your github use to just accessing the site. If you are interested in learning more about github, or if there is something github-related you are stuck on, please don't hesitate to reach out.
+
