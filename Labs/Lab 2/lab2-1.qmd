@@ -1,0 +1,26 @@
+---
+title: "Week 2 Lab"
+subtitle: ""
+author: "Connor Wiegand"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    # html-math-method: mathjax
+  #  revealjs:
+  #   theme: serif
+  #   preview-links: true
+  #   chalkboard: true
+  #   slide-number: true
+  #   menu:
+  #       side: right
+  #   scrollable: true
+  #   smaller: true
+  #   incremental: true
+  #   slide-level: 3
+
+editor:
+   render-on-save: true
+    
+---
