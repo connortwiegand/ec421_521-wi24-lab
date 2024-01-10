@@ -85,15 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#what-is-markdown" id="toc-what-is-markdown" class="nav-link active" data-scroll-target="#what-is-markdown">What is Markdown?</a>
   <ul class="collapse">
   <li><a href="#rmarkdown" id="toc-rmarkdown" class="nav-link" data-scroll-target="#rmarkdown">RMarkdown</a></li>
-  <li><a href="#chunks" id="toc-chunks" class="nav-link" data-scroll-target="#chunks">Chunks</a></li>
-  <li><a href="#yaml" id="toc-yaml" class="nav-link" data-scroll-target="#yaml">YAML</a></li>
+  <li><a href="#markdown" id="toc-markdown" class="nav-link" data-scroll-target="#markdown">1. Markdown</a></li>
+  <li><a href="#chunks-aka-cells" id="toc-chunks-aka-cells" class="nav-link" data-scroll-target="#chunks-aka-cells">2. Chunks (aka “Cells”)</a></li>
+  <li><a href="#yaml" id="toc-yaml" class="nav-link" data-scroll-target="#yaml">3. YAML</a></li>
+  </ul></li>
   <li><a href="#knitting" id="toc-knitting" class="nav-link" data-scroll-target="#knitting">Knitting</a></li>
-  </ul></li>
-  <li><a href="#what-is-latex" id="toc-what-is-latex" class="nav-link" data-scroll-target="#what-is-latex">What is Latex?</a>
-  <ul class="collapse">
-  <li><a href="#what-is-its-relation-to-markdown" id="toc-what-is-its-relation-to-markdown" class="nav-link" data-scroll-target="#what-is-its-relation-to-markdown">What is it’s relation to markdown</a></li>
-  </ul></li>
-  <li><a href="#what-is-quarto" id="toc-what-is-quarto" class="nav-link" data-scroll-target="#what-is-quarto">What is Quarto?</a></li>
+  <li><a href="#what-is-latex" id="toc-what-is-latex" class="nav-link" data-scroll-target="#what-is-latex">What is Latex?</a></li>
+  <li><a href="#remark-on-quarto" id="toc-remark-on-quarto" class="nav-link" data-scroll-target="#remark-on-quarto">Remark on Quarto</a></li>
   </ul>
 </nav>
 </div>
@@ -128,12 +126,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Generally speaking, markdown is a set of standards for formatting text on the internet. It has the advantage of being easy-to-write as well as easy-to-read. There are many “flavors” of markdown, each with their own special rules and/or syntax, but much of the core syntax stays the same throughtout.</p>
 <p>If you’ve been on reddit.com, you can format your posts/comments using a markdown syntax. For instance,</p>
 <ul>
-<li><code>_Fuck_</code> is rendered as <em>Fuck</em></li>
+<li><code>_Duh_</code> is rendered as <em>Duh</em></li>
 <li><code>**Sick**</code> is rendered as <strong>Sick</strong></li>
 <li><code>~~Mapajahit~~</code> is rendered as <del>Mapajahit</del></li>
 <li><code>[this one](https://en.wikipedia.org/wiki/Majapahit)</code> displays a link like <a href="https://en.wikipedia.org/wiki/Majapahit">this one</a> to the listed URL</li>
 </ul>
-<p>Here is a markdown reference for general use: <a href="">MD</a>.</p>
+<p><a href="https://www.markdownguide.org/">This</a> website offers some markdown guides and a cheat sheet for general use. Keep reading for more RMarkdown-specific resources.</p>
 <section id="rmarkdown" class="level2">
 <h2 class="anchored" data-anchor-id="rmarkdown">RMarkdown</h2>
 <p>RMarkdown is a framework that combines the formatting of Markdown with the language of R. RMarkdown documents can be output to HTML, PDF, and more, making it extermely handy for presenting, submitting work, website publishing, and tons of other stuff in the academic and professional world.</p>
@@ -144,8 +142,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Something called <em>YAML</em></li>
 </ol>
 </section>
-<section id="chunks" class="level2">
-<h2 class="anchored" data-anchor-id="chunks">Chunks</h2>
+<section id="markdown" class="level2">
+<h2 class="anchored" data-anchor-id="markdown">1. Markdown</h2>
+<p>Here is a link to the RMarkdown cheat sheet, provided from the team that makes RStudio:</p>
+<p><a href="https://rstudio.github.io/cheatsheets/rmarkdown.pdf">RMarkdown Cheat Sheet</a></p>
+<p>This cheat sheet, as well as some other helpful R-related cheat sheets, can be found <em>directly within RStudio</em>:</p>
+<div class="center">
+<p><img src="extra-files/cheatsheets-2-path.png" class="img-fluid"></p>
+</div>
+</section>
+<section id="chunks-aka-cells" class="level2">
+<h2 class="anchored" data-anchor-id="chunks-aka-cells">2. Chunks (aka “Cells”)</h2>
 <p>In RMarkdown, we can use three backticks (`) to enclose R code that we want displayed and/or run in our document. However, we have to tell the computer what language we want to use, by labelling the first set of backticks with <code>{r}</code>. In practice, this looks like</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">letters =</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>))</span>
@@ -154,7 +161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>You can also name chunks by adding a <code>space</code> + <code>&lt;chunk-name&gt;</code> after <code>{r}</code> (e.g.&nbsp;<code>{r my-r-chunk-1}</code>).</p>
 </section>
 <section id="yaml" class="level2">
-<h2 class="anchored" data-anchor-id="yaml">YAML</h2>
+<h2 class="anchored" data-anchor-id="yaml">3. YAML</h2>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -185,23 +192,118 @@ YAML?
 </div>
 <p>In this class, the YAML will always be provided for assignments. <em>You just have to add your name</em>.</p>
 </section>
-<section id="knitting" class="level2">
-<h2 class="anchored" data-anchor-id="knitting">Knitting</h2>
-<p>In order to use markdown, we need an engine which can put it together for us.</p>
 </section>
+<section id="knitting" class="level1">
+<h1>Knitting</h1>
+<p>In order to use RMarkdown, we need an engine which can “knit” together the R, Markdown, and YAML for us. Enter <code>knitr</code>.</p>
+<ul>
+<li><p><code>knitr</code> can be installed with <code>install.packages("knitr")</code>. Once you have <code>knitr</code> installed, you are ready for RMarkdown.</p>
+<ul>
+<li>Note: if you already use Latex, you <strong>may</strong> have some trouble when knitr installs <code>tinytex</code> on your system. You also may not. Just be prepared to troubleshoot if the two tex distributions get mad at each other.</li>
+</ul></li>
+<li><p>A good reference for the “chunk options” block that comes with every new <code>.rmd</code> file can be found <a href="https://yihui.org/knitr/options/">here</a>.</p></li>
+<li><p>Andrew Dickinson prepared this nice troubleshooting sheet for when your project doesn’t knit, found here: <a href="https://ajdickinson.github.io/EC421F23_lab/resources/RMD-trouble.html">What to do when your R Markdown file does not knit</a></p></li>
+<li><p>He also prepared this nice example document, which you can find on our github page.</p></li>
+</ul>
+<hr>
 </section>
 <section id="what-is-latex" class="level1">
 <h1>What is Latex?</h1>
-<p><span class="math inline">\(\LaTeX\)</span> is a collection of type-setting macros. It helps write your math and science textbooks, and is used by numerous scholars and practitioners for creating documents with pretty symbols.</p>
-<section id="what-is-its-relation-to-markdown" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-its-relation-to-markdown">What is it’s relation to markdown</h2>
+<p>You can think of <span class="math inline">\(\LaTeX\)</span> similarly to Markdown: it is a system of conventions used to tell a computer how to format a document. While Makrdown is mostly about formatting text (like for a web page), LaTeX is more about type-setting equations, symbols, formulae, and the publications that contain such items. It helps write your STEM textbooks and is used by numerous scholars and practitioners for creating pretty, techincal documents.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>If you go try to learn plain Latex, you might feel overwhelmed with syntax. Instead of YAML, direct Latex requires a completely different style of header. Here is a quick header to help you get started:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode latex code-with-copy"><code class="sourceCode latex"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">\documentclass</span>[12pt,letterpaper]{<span class="ex">article</span>}</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>{<span class="ex">mathtools</span>}</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>{<span class="ex">amssymb</span>}</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>{<span class="ex">amsthm</span>}</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>{<span class="ex">mathrsfs</span>}</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>[left=1in,top=1in,right=1in,bottom=1in]{<span class="ex">geometry</span>}</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">\usepackage</span>{<span class="ex">color</span>}</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">\renewcommand</span>{<span class="ex">\epsilon</span>}{<span class="fu">\varepsilon</span>}</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">\title</span>{Tes Template}</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">\author</span>{Connor W.}</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">\date</span>{01/10/24}</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">document</span>}</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">\maketitle</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>&lt;your content goes here&gt;</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">docment</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="https://www.overleaf.com/">Overleaf</a> is the ubiquitous (free) latex-editor, and it can be accessed directly from the web. It provides plenty of getting start guides and other resources, which are OK (IMHO).</p>
+</div>
+</div>
+</div>
+<p>RMarkdown (as well as many other markdown flavors) permits Latex type-setting That said, it is limited in certain ways when compared to plain Latex. Here are a few important things to note when formatting Latex equations <strong>in RMarkdown</strong>:</p>
+<ul>
+<li>In-line equations are formatted by wrapping dollar signs (<code>$</code>) arround the relevant text.
+<ul>
+<li>Ex: <code>$y_{i}$</code> is rendered as <span class="math inline">\(y_i\)</span></li>
+</ul></li>
+<li>A command in latex is identified by a backslash (<code>\</code>)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
+<ul>
+<li>Ex:
+<ul>
+<li><code>$\alpha$</code> = <span class="math inline">\(\alpha\)</span>,</li>
+<li><code>$\sum$</code> = <span class="math inline">\(\sum\)</span>,</li>
+<li><code>$\sim$</code> = <span class="math inline">\(\sim\)</span></li>
+</ul></li>
+</ul></li>
+<li>Subscripts are achieved using an underscore (<code>_</code>); superscripts using a caret (<code>^</code>).
+<ul>
+<li><code>$y_{ijk}$</code> = <span class="math inline">\(y_{ijk}\)</span>, but <code>$y_ijk$</code> = <span class="math inline">\(y_ijk\)</span>
+<ul>
+<li>Unless you use <code>{}</code>, subscripts only see one character ahead.</li>
+</ul></li>
+<li><code>$x_{i_1}^2$</code> = <span class="math inline">\(x_{i_1}^2\)</span></li>
+</ul></li>
+<li>Whitespace in an equation can be achieved via <code>\,</code>, <code>\</code>, or <code>\quad</code>:
+<ul>
+<li><code>$xyz$</code> = <span class="math inline">\(xyz\)</span></li>
+<li><code>$xy\, z$</code> = <span class="math inline">\(xy\, z\)</span></li>
+<li><code>$xy\ z$</code> = <span class="math inline">\(xy\ z\)</span></li>
+<li><code>$xy\, z$</code> = <span class="math inline">\(xy\quad z\)</span></li>
+</ul></li>
+<li>“Display Style” equations are prettier, bigger, centered, and get their own line. These equations are acheived by wrapping the relevant text in <strong>two</strong> dollar signs (<code>$$</code>)
+<ul>
+<li>Ex: <code>$$y_i \sim \alpha + \beta x_i + \varepsilon$$</code> yields <span class="math display">\[y_i \sim \alpha + \beta x_i + \varepsilon\]</span></li>
+</ul></li>
+</ul>
+<hr>
 </section>
-</section>
-<section id="what-is-quarto" class="level1">
-<h1>What is Quarto?</h1>
+<section id="remark-on-quarto" class="level1">
+<h1>Remark on Quarto</h1>
+<ul>
+<li><p><a href="https://quarto.org/">Quarto</a> is the “succesor” to RMarkdown, from the team that makes RStudio (Posit).</p></li>
+<li><p>Quarto is a little more difficult to get up and running, but it is much more flexible and powerful than RMarkdown</p></li>
+<li><p>We will be using <strong>RMarkdown</strong> in this class. However, Quarto behaves similarly, so you are of course welcome to work with it instead.</p></li>
+<li><p>If you are software-savvy, you can try getting Quarto up and running on your computer. I can try to help, but I won’t promise anything. I can be much more helpful with troubleshooting RMarkdown.</p></li>
+<li><p>Unless you work with other languages such as HTML, Python, and/or Latex, you probably won’t appreciate the advantages of Quarto as compared to RMarkdown.</p></li>
+</ul>
 </section>
 
-</main>
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>This is called <em>escaping</em><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

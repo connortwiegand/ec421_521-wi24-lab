@@ -12,10 +12,12 @@ TA: Connor Wiegand
 # Lab Notes
 
 Lab 1: Introduction to R
-- [html](Labs/Lab%201/lab-1.html)
+- Part 1: Introduction ([html](Labs/Lab%201/lab-1.html))
+- Part 2: R & RStudio ([html](Labs/Lab%201/lab-1.html))
+- Part 3: Introduction ([html](Labs/Lab%201/lab-1.html))
 
 
 ---
-Course by Kyutaro Matsuzawa. Adopted from [Andrew Dickinson's lab repository](https://github.com/ajdickinson/EC421F23_lab/) for the same course in the previous term.
+Course by Kyutaro Matsuzawa. Adopted from Andrew Dickinson's [lab](https://github.com/ajdickinson/EC421F23_lab/) for the same course in the previous term.
 
 

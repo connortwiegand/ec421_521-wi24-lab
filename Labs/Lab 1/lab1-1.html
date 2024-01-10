@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -88,15 +54,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#great-now-i-have-a-little-box-that-looks-like-a-command-prompt.-this-is-going-to-help-me-with-cconometrics" id="toc-great-now-i-have-a-little-box-that-looks-like-a-command-prompt.-this-is-going-to-help-me-with-cconometrics" class="nav-link" data-scroll-target="#great-now-i-have-a-little-box-that-looks-like-a-command-prompt.-this-is-going-to-help-me-with-cconometrics">Great, now I have a little box that looks like a command prompt. This is going to help me with cconometrics?</a></li>
   <li><a href="#are-there-alternatives-to-rstudio" id="toc-are-there-alternatives-to-rstudio" class="nav-link" data-scroll-target="#are-there-alternatives-to-rstudio">Are there alternatives to RStudio?</a></li>
   <li><a href="#by-the-way-where-the-hell-am-i" id="toc-by-the-way-where-the-hell-am-i" class="nav-link" data-scroll-target="#by-the-way-where-the-hell-am-i">By the way, where the hell am I?</a></li>
-  </ul></li>
-  <li><a href="#all-about-r" id="toc-all-about-r" class="nav-link" data-scroll-target="#all-about-r">All about R</a>
-  <ul class="collapse">
-  <li><a href="#packages" id="toc-packages" class="nav-link" data-scroll-target="#packages">Packages</a>
-  <ul class="collapse">
-  <li><a href="#ol-reliable" id="toc-ol-reliable" class="nav-link" data-scroll-target="#ol-reliable">Ol’ Reliable</a></li>
-  <li><a href="#pacman" id="toc-pacman" class="nav-link" data-scroll-target="#pacman">Pacman</a></li>
-  <li><a href="#pkgfn" id="toc-pkgfn" class="nav-link" data-scroll-target="#pkgfn"><code>&lt;pkg&gt;::&lt;fn&gt;</code></a></li>
-  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -184,97 +141,6 @@ A little more about Github
 </div>
 </div>
 <p>You can keep your github use to just accessing the site. If you are interested in learning more about github, or if there is something github-related you are stuck on, please don’t hesitate to reach out.</p>
-</section>
-</section>
-<section id="all-about-r" class="level1">
-<h1>All about R</h1>
-<section id="packages" class="level2">
-<h2 class="anchored" data-anchor-id="packages">Packages</h2>
-<p>R’s functionality can be extended through packages, which are collections of functions, data sets, and documentation bundled together.</p>
-<p>In order to use a package in R, two things have to be true:</p>
-<ol type="1">
-<li><p>The package is installed on your computer</p></li>
-<li><p>You have to load the package into the R <em>session</em></p>
-<ul>
-<li>I.e., if you close R, you likely have to re-load the package.</li>
-</ul></li>
-</ol>
-<section id="ol-reliable" class="level3">
-<h3 class="anchored" data-anchor-id="ol-reliable">Ol’ Reliable</h3>
-<p>The <code>base</code> way of managing packages in R is to install them using <code>install.packages('&lt;package name&gt;')</code> and load them using <code>library(&lt;package name&gt;)</code>.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<code>&lt;Notation&gt;</code>
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>By the way, you won’t really need to put anything in &lt;&gt; at any point. So, if my name is Connor Wiegand, and I read some form of <code>&lt;your name&gt;</code> in a tutorial in this class, I should replace all of <code>&lt;your name&gt;</code> with <code>Connor Wiegand</code>. That is,</p>
-<ul>
-<li><code>&lt;your name&gt;</code> = <code>Connor Wiegand</code></li>
-<li><code>'&lt;your name&gt;'</code> = <code>'Connor Wiegand'</code></li>
-<li><code>"&lt;your name&gt;"</code> = <code>"Connor Wiegand"</code></li>
-</ul>
-</div>
-</div>
-</div>
-<p>So, if I wanted to use the <code>dplyr</code> package for the first time, I would start by running <code>install.packages("dplyr")</code>. Then, when I want to use <code>dplyr</code> in my session, I run <code>library(dplyr)</code>.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>You only need to install a package <strong>once</strong>! Then it is on your system. Next time, you don’t have to run <code>install.packages()</code>, you can just call <code>library()</code>. The step of calling <code>library(&lt;pkg name&gt;)</code> must be re-done every time you close RStudio.</p>
-</div>
-</div>
-</section>
-<section id="pacman" class="level3">
-<h3 class="anchored" data-anchor-id="pacman">Pacman</h3>
-<p><code>pacman</code> is a package manager that has been around for a long time. The <code>pacman</code> package in R comes with a number of tools for package management, with the star-pupil being <code>p_load</code>. To use this command, you must first install the pacman package the usual way:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"pacman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Assume we have loaded pacman via <code>library(pacman)</code>, but have not loaded or installed any other packages. Then, if I wanted to install <em>and</em> load <code>dplyr</code> in one step, I would just run <code>pacman(dplyr)</code>. In fact, if I wanted to load 3 commonly used packages at once, I could run</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pacman</span>(dplyr, magrittr, ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>And all of my packagees would be installed (if they are not already) and loaded into my current session.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>There are times when installing via <code>pacman</code> does some funky things under the hood of your machine. When installing key packages for the first time, I will typically use <code>install.packages</code>.</p>
-</div>
-</div>
-</div>
-<hr>
-</section>
-<section id="pkgfn" class="level3">
-<h3 class="anchored" data-anchor-id="pkgfn"><code>&lt;pkg&gt;::&lt;fn&gt;</code></h3>
-<p>In RStudio, typing <code>&lt;package name&gt;</code> followed by two colons will pull up a set of available functions from the <code>&lt;package name&gt;</code> package. Moreover, if <code>&lt;pkg-A&gt;</code> is installed on your machine, you can use <code>pkg-A::fn()</code> to access the <code>fn</code> function, <em>regardless of whether or not <code>pkg-A</code> is loaded</em>. That means that, after installing <code>pacman</code> for the first time, you can use the syntax</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(pkg<span class="sc">-</span>A, pkg<span class="sc">-</span>B, etc.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>throughout your various programs to load in a package.</p>
-</section>
 </section>
 </section>
 

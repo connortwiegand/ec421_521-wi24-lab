@@ -30,12 +30,12 @@ Generally speaking, markdown is a set of standards for formatting text on the in
 
 If you've been on reddit.com, you can format your posts/comments using a markdown syntax. For instance,
 
-- `_Fuck_` is rendered as _Fuck_
+- `_Duh_` is rendered as _Duh_
 - `**Sick**` is rendered as **Sick**
 - `~~Mapajahit~~` is rendered as ~~Mapajahit~~
 - `[this one](https://en.wikipedia.org/wiki/Majapahit)` displays a link like [this one](https://en.wikipedia.org/wiki/Majapahit) to the listed URL
 
-Here is a markdown reference for general use: [MD]().
+[This](https://www.markdownguide.org/) website offers some markdown guides and a cheat sheet for general use. Keep reading for more RMarkdown-specific resources.  
 
 ## RMarkdown
 RMarkdown is a framework that combines the formatting of Markdown with the language of R. RMarkdown documents can be output to HTML, PDF, and more, making it extermely handy for presenting, submitting work, website publishing, and tons of other stuff in the academic and professional world. 
@@ -46,7 +46,18 @@ An RMarkdown document, with the file extension `.rmd`, consists of three main co
 2. R code "chunks" -- pieces of R code interlaced throughout your document.
 3. Something called _YAML_
 
-## Chunks
+## 1. Markdown
+Here is a link to the RMarkdown cheat sheet, provided from the team that makes RStudio:
+
+[RMarkdown Cheat Sheet](https://rstudio.github.io/cheatsheets/rmarkdown.pdf)
+
+This cheat sheet, as well as some other helpful R-related cheat sheets, can be found _directly within RStudio_:
+
+:::{.center}
+![](extra-files/cheatsheets-2-path.png)
+:::
+
+## 2. Chunks (aka "Cells")
 In RMarkdown, we can use three backticks (\`) to enclose R code that we want displayed and/or run in our document. However, we have to tell the computer what language we want to use, by labelling the first set of backticks with `{r}`. In practice, this looks like
 
 ````markdown
@@ -57,7 +68,7 @@ x
 ````
 You can also name chunks by adding a `space` + `<chunk-name>` after `{r}` (e.g. `{r my-r-chunk-1}`).
 
-## YAML
+## 3. YAML
 
 :::{.callout-note collapse="true"}
 # YAML?
@@ -84,15 +95,86 @@ An exmaple YAML might look like:
 
 In this class, the YAML will always be provided for assignments. _You just have to add your name_.
 
-## Knitting
+# Knitting
 
-In order to use markdown, we need an engine which can put it together for us.
+In order to use RMarkdown, we need an engine which can "knit" together the R, Markdown, and YAML for us. Enter `knitr`. 
 
+- `knitr` can be installed with `install.packages("knitr")`. Once you have `knitr` installed, you are ready for RMarkdown. 
+
+  - Note: if you already use Latex, you **may** have some trouble when knitr installs `tinytex` on your system. You also may not. Just be prepared to troubleshoot if the two tex distributions get mad at each other. 
+
+- A good reference for the "chunk options" block that comes with every new `.rmd` file can be found [here](https://yihui.org/knitr/options/).
+
+- Andrew Dickinson prepared this nice troubleshooting sheet for when your project doesn't knit, found here: [What to do when your R Markdown file does not knit](https://ajdickinson.github.io/EC421F23_lab/resources/RMD-trouble.html)
+
+- He also prepared this nice example document, which you can find on our github page.
+
+---
 
 # What is Latex?
-$\LaTeX$ is a collection of type-setting macros. It helps write your math and science textbooks, and is used by numerous scholars and practitioners for creating documents with pretty symbols. 
+You can think of $\LaTeX$ similarly to Markdown: it is a system of conventions used to tell a computer how to format a document. While Makrdown is mostly about formatting text (like for a web page), LaTeX is more about type-setting equations, symbols, formulae, and the publications that contain such items. It helps write your STEM textbooks and is used by numerous scholars and practitioners for creating pretty, techincal documents. 
 
-## What is it's relation to markdown
+:::{.callout-tip collapse="true"}
 
+If you go try to learn plain Latex, you might feel overwhelmed with syntax. Instead of YAML, direct Latex requires a completely different style of header. Here is a quick header to help you get started:
 
-# What is Quarto?
+```{Latex}
+\documentclass[12pt,letterpaper]{article}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in]{geometry}
+\usepackage{color}
+
+\renewcommand{\epsilon}{\varepsilon}
+
+\title{Tes Template}
+\author{Connor W.}
+\date{01/10/24}
+
+\begin{document}
+\maketitle
+
+<your content goes here>
+
+\end{docment}
+```
+
+[Overleaf](https://www.overleaf.com/) is the ubiquitous (free) latex-editor, and it can be accessed directly from the web. It provides plenty of getting start guides and other resources, which are OK (IMHO). 
+:::
+
+RMarkdown (as well as many other markdown flavors) permits Latex type-setting That said, it is limited in certain ways when compared to plain Latex. Here are a few important things to note when formatting Latex equations **in RMarkdown**:
+
+  - In-line equations are formatted by wrapping dollar signs (`$`) arround the relevant text. 
+    - Ex: `$y_{i}$` is rendered as $y_i$ 
+  - A command in latex is identified by a backslash (`\`)^[This is called _escaping_]
+    - Ex:
+      - `$\alpha$` = $\alpha$, 
+      - `$\sum$` = $\sum$, 
+      - `$\sim$` = $\sim$
+  - Subscripts are achieved using an underscore (`_`); superscripts using a caret (`^`).
+    - `$y_{ijk}$` = $y_{ijk}$, but `$y_ijk$` = $y_ijk$
+      - Unless you use `{}`, subscripts only see one character ahead.
+    - `$x_{i_1}^2$` = $x_{i_1}^2$
+  - Whitespace in an equation can be achieved via  `\,`, `\`, or `\quad`:
+    - `$xyz$` = $xyz$
+    - `$xy\, z$` = $xy\, z$
+    - `$xy\ z$` = $xy\ z$
+    - `$xy\, z$` = $xy\quad z$
+  - "Display Style" equations are prettier, bigger, centered, and get their own line. These equations are acheived by wrapping the relevant text in **two** dollar signs (`$$`)
+    - Ex: `$$y_i \sim \alpha + \beta x_i + \varepsilon$$` yields $$y_i \sim \alpha + \beta x_i + \varepsilon$$
+
+---
+# Remark on Quarto
+
+- [Quarto](https://quarto.org/) is the "succesor" to RMarkdown, from the team that makes RStudio (Posit).
+
+- Quarto is a little more difficult to get up and running, but it is much more flexible and powerful than RMarkdown
+
+- We will be using **RMarkdown** in this class. However, Quarto behaves similarly, so you are of course welcome to work with it instead. 
+
+- If you are software-savvy, you can try getting Quarto up and running on your computer. I can try to help, but I won't promise anything. I can be much more helpful with troubleshooting RMarkdown. 
+
+- Unless you work with other languages such as HTML, Python, and/or Latex, you probably won't appreciate the advantages of Quarto as compared to RMarkdown.
+

@@ -119,7 +119,7 @@ pacman(dplyr, magrittr, ggplot2)
 And all of my packagees would be installed (if they are not already) and loaded into my current session.
 
 ::: {.callout-warning collapse=T}
-There are times when installing via `pacman` does some funky things under the hood of your machine. When installing key packages for the first time, I will typically use `install.packages`.
+There are times when installing via `pacman` does some funky things under the hood of your machine. When installing key packages for the first time, I typically use `install.packages`.
 :::
 
 ---
