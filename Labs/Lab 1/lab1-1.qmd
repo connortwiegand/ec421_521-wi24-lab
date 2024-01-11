@@ -63,7 +63,7 @@ At this level, not really. While some other languages may have users over a vari
 
 That being said, [VS Code](https://code.visualstudio.com/) from Microsoft^[Though owned by Microsoft, VS Code is not exclusive to Windows] is an application that allows for large number of languages to be run in it. I won't officially go over setting up VS Code, but keep it in your back pocket for the future. 
 
-### By the way, where the hell am I?
+<!-- ### By the way, where the hell am I?
 You're on **github**. If you are unfamiliar with github, think of it kind of like twitter for software developers^[...and adjacent people who write code, like econometricians].   
 
 ::: {.callout-note collapse=T}
@@ -71,5 +71,5 @@ You're on **github**. If you are unfamiliar with github, think of it kind of lik
 Sort of like RStudio to R, Github amplifies the user experience and functionality of _Git_. This allows for amazingly tractable _version control_, which is important to developers of all kinds. Basically, it's like a file system with a "view history" feature, and then some.  
 :::
 
-You can keep your github use to just accessing the site. If you are interested in learning more about github, or if there is something github-related you are stuck on, please don't hesitate to reach out.
+You can keep your github use to just accessing the site. If you are interested in learning more about github, or if there is something github-related you are stuck on, please don't hesitate to reach out. -->
 
