@@ -7,6 +7,7 @@ format:
     theme: flatly
     toc: true
     toc-depth: 3
+    embed-resources: true
     # html-math-method: mathjax
   #  revealjs:
   #   theme: serif
