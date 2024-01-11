@@ -108,7 +108,7 @@ In order to use RMarkdown, we need an engine which can "knit" together the R, Ma
 
 - Andrew Dickinson prepared this nice troubleshooting sheet for when your project doesn't knit, found here: [What to do when your R Markdown file does not knit](https://ajdickinson.github.io/EC421F23_lab/resources/RMD-trouble.html)
 
-- He also prepared this nice example document, which you can find on our github page.
+- He also prepared this nice example document, which you can find on Canvas.
 
 ---
 
