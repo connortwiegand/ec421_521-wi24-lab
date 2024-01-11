@@ -12,9 +12,11 @@ TA: Connor Wiegand
 # Lab Notes
 
 Lab 1: Introduction to R
-- Part 1: Introduction ([html](Labs/Lab%201/lab-1.html))
-- Part 2: R & RStudio ([html](Labs/Lab%201/lab-1.html))
-- Part 3: Introduction ([html](Labs/Lab%201/lab-1.html))
+- Part 1: Introduction ([html](Labs/Lab%201/lab1-1.html))
+- Part 2: R & RStudio ([html](Labs/Lab%201/lab1-2.html))
+- Part 3: [R]Markdown ([html](Labs/Lab%201/lab1-3.html))
+   - Example RMarkdown file: [ex.Rmd](Labs/Lab%201/extra-files/ex.Rmd)
+
 
 
 ---
