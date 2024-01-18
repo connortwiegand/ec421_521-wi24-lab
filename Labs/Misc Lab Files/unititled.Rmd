@@ -1,0 +1,47 @@
+---
+title: "Untitled"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-01-10"
+---
+
+^^^YAML^^^
+
+R Markdown allows you to publish documents which contain ~~incely~~ nicely formatted text, equations, and R code.
+
+   - The output can be in html, pdf, or word.
+   
+   - The formatted text uses _markdown_ syntax
+   
+```{r chunk-2}
+library(magrittr)
+
+mat <- matrix(1:6, nrow = 2)
+mat
+class(mat)
+
+
+as.data.frame(mat)
+mat %>% as.data.frame() #same as above
+
+# Assignment pipe:
+mat %<>% as.data.frame()
+mat
+mat %>% class()
+
+```
+
+Here is some math:
+
+$$
+\sum_0^\infty x_i
+$$
+
+R markdown also allows for plots:
+
+```{r}
+plot(1:10, rnorm(10))
+```
+
+

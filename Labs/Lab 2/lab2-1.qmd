@@ -1,12 +1,13 @@
 ---
-title: "Week 2 Lab"
-subtitle: ""
+title: "Lab 2: `tidyverse`"
+subtitle: "Part 1: Data and Directories"
 author: "Connor Wiegand"
 format:
   html:
     theme: flatly
     toc: true
     toc-depth: 3
+    embed-resources: true
     # html-math-method: mathjax
   #  revealjs:
   #   theme: serif
@@ -22,5 +23,120 @@ format:
 
 editor:
    render-on-save: true
-    
 ---
+
+## The `tidyverse`
+
+The tidyverse is a collection of R packages that work in harmony for data science. The "tidy" framework is designed to be human-readable, and the functions within the tidyverse help facilitate data manipulation, visualization, and modeling. Establishing a working understanding of the tidyverse can serve as a broad foundational understanding of data science principles in R.
+
+The main packages in the tidyverse include:
+
+  - `ggplot2`: For data visualization
+  - `dplyr`: For data manipulation
+  - `stringr`: For string manipulation
+  - `tidyr`: For cleaning and reshaping data
+  - `readr`: For reading data into R
+  - `purrr`: For functional programming
+  - `tibble`: A modern approach to data frames
+  - `forcats`: For working with factors
+
+I have highlighted the first three above because they are the ones I (explicitly) use most. That is, I am looking at the help files for the functions within these packages most often. 
+
+## Tidy Data
+The tidyverse has a specific philosophy regarding how data should be organized. A dataset is **_tidy_** provided that 
+
+  - Each variable is a column
+  - Each observation is a row
+
+This structure makes it easier to manipulate, visualize, and model your data.
+
+---
+
+# Importing data into R
+Before diving head first into the tidyverse, let's review how to get data into R. 
+
+## The working directory
+
+- When opening (and working in) an R session, you have to keep in mind your _working directory_
+- The working directory is the file folder on your computer which R is currently looking at
+- You can access the working directory by running
+  ```{r}
+  getwd()
+  ```
+
+- You can set the working directory using `setwd(<path-to-your-folder>)`
+
+---
+
+#### Example
+
+----
+
+Suppose I have a file structure that looks something like
+
+```
+cwiegand
+├── Documents
+│   └── School
+│       └── EC 421
+│           ├── Homework
+|           |   ├── hw-data.csv
+|           |   ├── 421-hw-1.html
+│           |   └── 421-hw-1.rmd
+|           └── Labs
+|               ├── lab-data.csv
+|               ├── lab1-1.html
+|               ├── lab1-1.rmd
+|               ├── lab1-2.html
+|               └── lab1-2.rmd
+└── Downloads
+    ├── data.csv
+    └── screenshot.csv
+```
+
+Suppose my current working directory is `cwiegand/Documents/School/EC 421/Homework`. Let's say we are working with a function like `read_csv()` which can take a file path as an input.
+
+- I can directly access `hw-data.csv` by running `read_csv("hw-data.csv")`
+- However, R currently is only looking in this folder, so `read_csv("lab-data.csv")` won't work
+- However, we can always give an _absolute_ file path: `read_csv("/Documents/School/EC 421/Labs/lab-data.csv")`
+
+...but this isn't very convenient. So, instead, suppose I run 
+```{r}
+#| eval=F
+setwd("cwiegand/Documents/School/EC 421/")
+```
+
+- Now, I can access either of the data files in my EC 421 folder by running 
+```{r}
+#| eval=F
+read_csv("Homework/hw-data.csv")
+read_csv("Labs/lab-data.csv")
+```
+
+:::{.callout-tip collapse="true"}
+Depending on your operating system, you may have to pay special attention to slashes and spaces in file paths. For instance, you may have to replace forward slashes with two back slashes, you may need to escape spaces (`/EC\ 421/`), etc.
+:::
+
+- If I want to access the files in Downloads, though, I would either have to speficying the full file path, or change to a higher level directory (e.g. `cwiegand`). 
+
+- Note: Recall that RStudio has a `Files` pane. This can help with data importing and setting working directories
+
+---
+
+## Importing Data
+
+- Typically, your data will be available in `.csv` format, which spreadsheet applications can often read
+  - If your data is in another spreadsheet format (`.tsv`, `.xls(x)`, etc.), you can try to convert it (which most spreadsheet applications can do), or use another function (many similar options to `read_csv`). I reccomend the former.
+
+You should have seen data importing in your first econometrics class. Here is a brief overview, using the `read_csv` function from the tidyverse.
+
+- We can use the `read_csv()` function from the `dplyr` package to read our data into R. The input to `read_csv()` is a quoted path to your file (either absolute or ) 
+- By default, `read_csv()` has `col_names` set to `TRUE`, which means that the first entry of every column will be converted to that column's
+- `read_csv` only _reads_ the file, it doesn't store it. We have to assign the call in order to store it. For instance,
+```{r}
+#| eval=F
+my-data <- read_csv("Docs/School/EC-421/my-data.csv")
+```
+
+
+

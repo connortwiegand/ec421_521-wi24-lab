@@ -1,0 +1,70 @@
+---
+title: "Lab 2: `tidyverse`"
+subtitle: "Part 2: Key `dplyr` syntax"
+author: "Connor Wiegand"
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    # html-math-method: mathjax
+  #  revealjs:
+  #   theme: serif
+  #   preview-links: true
+  #   chalkboard: true
+  #   slide-number: true
+  #   menu:
+  #       side: right
+  #   scrollable: true
+  #   smaller: true
+  #   incremental: true
+  #   slide-level: 3
+
+editor:
+   render-on-save: true
+---
+
+
+
+# Recall: 
+
+## The `tidyverse`
+
+The tidyverse is a collection of R packages that work in harmony for data science. The "tidy" framework is designed to be human-readable, and the functions within the tidyverse help facilitate data manipulation, visualization, and modeling. Establishing a working understanding of the tidyverse can serve as a broad foundational understanding of data science principles in R.
+
+The main packages in the tidyverse include:
+
+  - `ggplot2`: For data visualization
+  - `dplyr`: For data manipulation
+  - `stringr`: For string manipulation
+  - `tidyr`: For cleaning and reshaping data
+  - `readr`: For reading data into R
+  - `purrr`: For functional programming
+  - `tibble`: A modern approach to data frames
+  - `forcats`: For working with factors
+
+I have highlighted the first three above because they are the ones I (explicitly) use most. That is, I am looking at the help files for the functions within these packages most often. 
+
+## Tidy Data
+The tidyverse has a specific philosophy regarding how data should be organized. A dataset is **_tidy_** provided that 
+
+  - Each variable is a column
+  - Each observation is a row
+
+This structure makes it easier to manipulate, visualize, and model your data.
+
+----
+#### Example
+
+----
+
+### Filter and Select
+
+### Mutate, arrange, group_by, summarize
+
+
+----
+
+## The `magrittr` pipe
+
