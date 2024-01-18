@@ -1,0 +1,41 @@
+/*-- scss:defaults --*/
+
+$h2-font-size: 1.6rem !default;
+$headings-font-weight: 400 !default;
+// $body-color:             !default;
+// $link-color: #81A1C1;
+$code-color: #4758AB;
+
+
+/*-- scss:rules --*/
+.ex {
+   color: #9c9c9c !important;
+   font-style: italic;
+}
+
+div.callout-note.callout {
+   border-left-color: #2780e3;
+}
+
+div.callout-note.callout-style-default > .callout-header {
+      background-color: #e9f2fc;
+      opacity: 85%;
+}
+
+h1:not(.title) {
+   text-align: center;
+   border-bottom: thick double #dee2e6;
+   width: 25%;
+   margin-left: 40%;
+}
+
+h3 {
+   border-bottom: 1px solid #dee2e6;
+   padding-bottom: .5rem;
+}
+
+h4 {
+   padding-bottom: 1rem;
+   font-weight: bold;
+   font-size: 1.2em;
+}

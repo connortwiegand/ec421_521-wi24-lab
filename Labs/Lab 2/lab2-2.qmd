@@ -4,10 +4,13 @@ subtitle: "Part 2: Key `dplyr` syntax"
 author: "Connor Wiegand"
 format:
   html:
-    theme: flatly
+    theme: 
+      - flatly
+      - ../lab-style.scss
     toc: true
-    toc-depth: 3
-    embed-resources: true
+    toc-depth: 4
+    execute: false
+    # embed-resources: true
     # html-math-method: mathjax
   #  revealjs:
   #   theme: serif
@@ -27,7 +30,8 @@ editor:
 
 
 
-# Recall: 
+# Recall:
+
 
 ## The `tidyverse`
 
@@ -55,16 +59,190 @@ The tidyverse has a specific philosophy regarding how data should be organized. 
 This structure makes it easier to manipulate, visualize, and model your data.
 
 ----
-#### Example
+
+### [Ex.]{.ex}
 
 ----
 
-### Filter and Select
+# `dplyr`
 
-### Mutate, arrange, group_by, summarize
+---- 
+
+`dplyr` is one of the most popular packages in R for data manipulation. It is the most common and widely considered “best” starting place when learning data manipulation fundamentals in R. It offers a set of “verbs” to carry out essential data manipulation operations and is designed to be both flexible and intuitive.
+
+**Core verbs**: The power of dplyr comes from its core verbs that simplify data manipulation tasks. Here are the primary ones:
+
+:::: {.columns}
+
+::: {.column width="50%"}
+- `mutate`  
+- `filter`
+- `arrange`
+:::
+
+::: {.column width="50%"}
+- `select`
+- `group_by`
+- `summarize`^[`summarise` works as well]
+:::
+
+::::
+
+In order to get started on `dplyr`, we need to have it installed (which you hopefully do already). We also need some example data to work with. See the blurb below
+
+:::{.callout-note collapse="true"}
+# Note: Flights Data Set
+The flights dataset is a large data frame that contains information about domestic flights that departed from New York City in 2013. The dataset has various columns like providing various details about each flight.  This dataset provides a comprehensive look at flight data, making it an excellent resource for data manipulation and analysis exercises. See the reference [here](https://www.rdocumentation.org/packages/nycflights13/versions/1.0.1/topics/flights) for descriptions of each variable.
+
+To use the flights dataset, you need to install and load the nycflights13 package, which contains this and other related datasets. You can install it from CRAN by running `install.packages("nycflights13")`.
+
+Once we have loaded flights into our session (see below), we can use the `head()` and `glimpse()` functions to have a peek at the data. Try this for yourself!
+:::
+
+Once everything is installed, we let's load these packages into our R session:
+```{r}
+# pacman::p_load(dplyr, magrittr, nycflights13)
+library(dplyr)
+library(magrittr)
+library(nycflights13)
+```
+
+## Filter and Select
+
+The `filter` and `select` are two key verbs to know. These functions correspond to each of the "tidy data" rules presented above: _filter_ let's you narrow down your data to a specified set of rows (observations), while _select_ allows you to narrow down your data to a specific set of columns (variables).
+
+### `select`
+
+#### Basic information
+
+The `select` function in `dplyr` is used to select columns from a data frame, effectively subsetting the data to include only variables of interest. This is especially useful when you're dealing with wide datasets with many variables, and you want to focus only on a few.
+
+**Syntax**:
+
+```R
+select(data, column1, column2, ...)
+```
+
+Here, `column1`, `column2`, etc., are the names of the columns you want to keep.
+
+[Features:]{.hi}
+
+- [Column Selection:]{.note} Keep only the columns you need.
+- [Reordering:]{.note} Rearrange the order of the columns.
+- [Renaming:]{.note} Can be combined with `rename` to rename columns in the output.
+- [Column Removal:]{.note} Use `-` to exclude specific columns.
+  <!-- - [Ex.]{.ex} `select(data, -column1)` removes `column1` from `data` -->
+
+#### [Ex.]{.ex}
+
+[Select Specific Columns]{.hi}
+
+If you're only interested in the departure and arrival times of the flights, you can use `select` to keep only those columns:
+
+```{r}
+subset_flights = select(flights, dep_time, arr_time)
+
+subset_flights
+```
+
+[Rearrange Columns]{.hi}
+
+You can rearrange the order of the columns simply by changing their order in the `select` function:
+
+```{r}
+subset_flights = select(flights, arr_time, dep_time)
+
+subset_flights
+```
+
+[Exclude Columns]{.hi}
+
+If you want all columns except for a few, you can use `-`:
+
+```{r}
+subset_flights = select(flights, -year, -month, -day)
+
+subset_flights
+```
+
+#### Practice questions
+
+Here are some practice questions based on the `flights` dataset from the [R for Data Science book](https://r4ds.had.co.nz/transform.html#select):
+
+1. **Select Time Columns**: Use `select` to create a new data frame that includes only the columns related to time (`dep_time`, `sched_dep_time`, `arr_time`, `sched_arr_time`).
+
+2. **Select Location Columns**: Use `select` to create a new data frame that contains only the origin and destination airports.
+
+3. **Drop ID Columns**: Create a new data frame that contains all columns except for `year`, `month`, and `day`.
+
+These practice questions should give you a solid understanding of how to use `select` for column selection and reordering in the `flights` dataset.
+
+## `filter`
+
+#### Basic Information
+
+The `filter` function in `dplyr` is used for subsetting a data frame, retaining only the rows that meet certain conditions. This operation is crucial when you're interested in analyzing only a specific subset of your data based on one or more criteria.
+
+[Syntax:]{.hi}
+
+```R
+filter(data, condition1, condition2, ...)
+```
+
+Here, `data` is the data frame you're working with, and `condition1, condition2, ...` are the conditions you want to apply.
+
+#### [Ex.]{.ex}
+
+To demonstrate, let's use the `flights` dataset. Suppose you want to filter the data to only include flights that were delayed by more than 30 minutes.
+
+```{r}
+delayed_flights = filter(flights, dep_delay > 30)
+delayed_flights = select(delayed_flights, dep_delay)
+
+delayed_flights
+```
+
+You can also combine multiple conditions using logical operators like `&` (and) or `|` (or).
+
+For example, if you're interested in flights that were delayed by more than 30 minutes and traveled a distance of more than 1000 miles:
+
+```{r}
+long_delayed_flights = filter(flights, dep_delay > 30 & distance > 1000)
+long_delayed_flights = select(long_delayed_flights, dep_delay)
+
+long_delayed_flights
+```
+
+#### Practice questions
+
+To reinforce your understanding, try solving these practice questions based on the `flights` dataset:
+
+1. Filter the `flights` data to include only flights operated by the carrier "UA" (United Airlines). How many such flights are there?
+    - Hint: Use `nrow()` to find the number of rows in the filtered dataset.
+  
+2. Filter the `flights` dataset to only include flights that departed from JFK and were delayed by less than 15 minutes. What is the average distance traveled by these flights?
+    - Hint: Use `summarize()` to find the average distance.
+
+3. Filter the `flights` data to include flights that either departed from LGA and arrived at ORD, or departed from JFK and arrived at SFO. How many such unique routes are there?
+    - Hint: Use `distinct()` to find unique routes based on the `origin` and `dest` columns.
+
+These questions are designed to give you a deeper understanding of how to use `filter` to subset your data based on specific conditions.
+
+----
+
+## `mutate`
 
 
 ----
 
-## The `magrittr` pipe
+## Aside: The `magrittr` pipe
+
+----
+
+## Other Key `dplyr` verbs 
+
+### `arrange` 
+
+### `group_by` and `summarize`
+
 
