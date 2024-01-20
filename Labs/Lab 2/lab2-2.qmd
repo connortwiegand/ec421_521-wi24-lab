@@ -8,21 +8,13 @@ format:
       - flatly
       - ../lab-style.scss
     toc: true
-    toc-depth: 4
-    execute: false
-    # embed-resources: true
+    toc-depth: 3
+    execute: 
+      # eval: false
+      warning: false
+      error: false
+    embed-resources: true
     # html-math-method: mathjax
-  #  revealjs:
-  #   theme: serif
-  #   preview-links: true
-  #   chalkboard: true
-  #   slide-number: true
-  #   menu:
-  #       side: right
-  #   scrollable: true
-  #   smaller: true
-  #   incremental: true
-  #   slide-level: 3
 
 editor:
    render-on-save: true
@@ -30,7 +22,7 @@ editor:
 
 
 
-# Recall:
+# Recall
 
 
 ## The `tidyverse`
@@ -60,7 +52,22 @@ This structure makes it easier to manipulate, visualize, and model your data.
 
 ----
 
-### [Ex.]{.ex}
+#### [Ex.]{.ex}
+
+We will work with another data set in this example. However, one dataset that ships nicely with `dplyr` is `starwars`. Once we load `dplyr` into our R session, we can load starwars with the `data()` function. Like this:
+```{r}
+#| eval=TRUE
+library(dplyr)
+data(starwars)
+```
+
+Now, running `starwars` should print some of the data frame for us. 
+```{r}
+#| eval=TRUE
+starwars
+```
+
+As you can see, each row is a character in the starwars universe (an _observation_), while each column is a characteristic of that character (e.g. a _varaible_). 
 
 ----
 
@@ -83,7 +90,7 @@ This structure makes it easier to manipulate, visualize, and model your data.
 ::: {.column width="50%"}
 - `select`
 - `group_by`
-- `summarize`^[`summarise` works as well]
+- `summarize`^[`summarise` works as well (if you order chips with your burger)]
 :::
 
 ::::
@@ -107,7 +114,7 @@ library(magrittr)
 library(nycflights13)
 ```
 
-## Filter and Select
+## `filter` and `select`
 
 The `filter` and `select` are two key verbs to know. These functions correspond to each of the "tidy data" rules presented above: _filter_ let's you narrow down your data to a specified set of rows (observations), while _select_ allows you to narrow down your data to a specific set of columns (variables).
 
@@ -165,6 +172,8 @@ subset_flights = select(flights, -year, -month, -day)
 subset_flights
 ```
 
+----
+
 #### Practice questions
 
 Here are some practice questions based on the `flights` dataset from the [R for Data Science book](https://r4ds.had.co.nz/transform.html#select):
@@ -177,7 +186,7 @@ Here are some practice questions based on the `flights` dataset from the [R for 
 
 These practice questions should give you a solid understanding of how to use `select` for column selection and reordering in the `flights` dataset.
 
-## `filter`
+### `filter`
 
 #### Basic Information
 
@@ -232,17 +241,292 @@ These questions are designed to give you a deeper understanding of how to use `f
 
 ## `mutate`
 
+#### Basic information
+
+The `mutate` function is used to add new variables to a dataset or to modify existing variables. It's one of the most commonly used "verbs" in `dplyr`. The basic syntax is:
+
+```{R}
+#| eval: false
+mutate(data, new_variable = expression)
+```
+
+Here, `new_variable` is the name you want to assign to the new column, and `expression` is the calculation used to generate the new variable. 
+
+[Features:]{.hi}
+
+- [Column Operations:]{.note} Create new columns based on existing ones
+- [Function Application:]{.note} Apply any R function to existing columns to create a new column
+- [In-place Modification:]{.note} While `mutate` does not modify the original data frame, it's often used in a dplyr chain to alter data on-the-fly
+
+#### [Ex.]{.ex}
+
+Let's consider a simple data frame containing two variables, `x` and `y`.
+
+```{r}
+library(tidyverse)
+
+# Create a tibble
+tbl = tibble(x = 1:5, y = 6:10)
+
+tbl
+```
+
+```{r}
+# Add a new column `z` which is the sum of `x` and `y`
+tbl = mutate(tbl, z = x + y)
+
+tbl
+```
+
+Now, the data frame will have a new column `z` containing the sum of `x` and `y`.
+
+[Using functions]{.hi}
+
+You can also use R functions within `mutate`.
+
+```{r}
+# Create a new column `log_x` containing the logarithm of `x`
+tbl = mutate(tbl, log_x = log(x))
+
+tbl
+```
+
+[Multiple operations]{.hi}
+
+You can perform multiple operations within a single `mutate` function.
+
+```{r}
+# Create new columns `sqrt_x` and `diff_xy`
+tbl = mutate(tbl, sqrt_x = sqrt(x), diff_xy = x - y)
+
+tbl
+```
+
+[Create a `speed` Column]{.hi}
+
+Let's say you want to calculate the speed of each flight. You can create a new variable `speed` which would be `distance` divided by `air_time`.
+
+```{r}
+flights = mutate(flights, speed = distance / air_time * 60)
+```
+
+##### Gain/Loss in Departure Times
+
+To calculate how much time was gained or lost during the flight, you can subtract `sched_dep_time` from `dep_time`.
+
+```{r}
+flights = mutate(flights, time_gain = dep_time - sched_dep_time)
+```
+
+#### Practice questions
+
+Here are some practice questions based on the `flights` dataset from the [R for Data Science book](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate).
+
+1. **Flight Duration**: Use `mutate` to create a new variable called `flight_duration` which is the difference between `arr_time` and `dep_time`.
+
+2. **Hourly Delay**: Use `mutate` to create a new variable `hourly_delay` that is calculated as `arr_delay / air_time * 60`.
+
+3. **Temperature Range**: The dataset has columns `temp` and `dewp` for temperature and dew point, respectively. Use `mutate` to create a new column `temp_range` which is the difference between these two measurements.
+
+These questions should give you a good practice on how to use the `mutate` function effectively for data manipulation with the `flights` dataset.
+
 
 ----
 
-## Aside: The `magrittr` pipe
+## `magrittr`: It's piping time
+
+### `%>%`: it's a pipe
+
+![](MagrittePipe.jpg){fig-align="center"}
+
+> The famous pipe. How people reproached me for it! And yet, could you stuff my pipe? No, it's just a representation, is it not? So if I had written on my picture "This is a pipe", I'd have been lying!
+— René Magritte^[Both and image and quote from [Wikipedia](https://en.wikipedia.org/wiki/The_Treachery_of_Images)]
+
+#### Basic information
+
+The pipe operator `%>%` is an extremely powerful tool for chaining together multiple operations in a sequence. It is not part of base R but is made available through the `magrittr` package, which is automatically loaded when you load `dplyr`. The primary benefit of using the pipe operator is that it improves the readability of your code and helps you write more intuitive and maintainable scripts.
+
+#### How it works
+
+The pipe operator takes the output of one function and uses it as the first argument of the next function. It eliminates the need to save intermediate variables when you perform multiple operations on a dataset.
+
+[Syntax:]{.hi}
+
+```R
+data %>% function1() %>% function2() %>% function3()
+```
+
+Here, `function1()` is applied to `data`, and the result is then passed as an argument to `function2()`, and so on.
+
+This code is equivalently written as 
+
+```R
+function3(function2(function1(data)))
+```
+
+#### [Ex.]{.ex}
+
+Let's say you want to filter the `flights` dataset to include only flights that were delayed by more than 30 minutes and then arrange them by `dep_time`. Using the pipe operator, the code will look like this:
+
+```R
+flights %>% 
+  filter(dep_delay > 30) %>% 
+  arrange(dep_time)
+```
+
+This sequence reads naturally: "Take the `flights` data, then filter for flights delayed by more than 30 minutes, then arrange by departure time."
+
+### `%<>%`: the assignment pipe
+
+#### Basic information
+
+The compound assignment pipe `%<>%`, also from the `magrittr` package, allows you to perform an operation on a variable and update the variable with the result, all in a single step. It's particularly useful for modifying a dataset in-place without the need to create a new one.
+
+[Syntax:]{.hi}
+
+```R
+data %<>% function()
+```
+
+Here, `function()` is applied to `data`, and the result replaces the original `data`.
+
+#### [Ex]{.ex}
+
+Suppose you have a data frame called `subset_flights` containing a subset of the `flights` data, and you want to filter it to include only those flights that had a departure delay greater than 30 minutes. Instead of creating a new variable to store the filtered data, you can use `%<>%` to update `subset_flights` in-place.
+
+```R
+# Create a subset
+subset_flights = select(flights, year:day, dep_time, arr_time)
+
+# Filter in-place
+subset_flights %<>% filter(dep_delay > 30)
+```
+
+In this example, `subset_flights` is updated to include only rows where the departure delay is greater than 30 minutes, without having to reassign the result to `subset_flights` explicitly.
+
+#### Summary
+
+Using the pipe operator `%>%` can make your code cleaner and easier to read, particularly when you're performing several operations in a sequence. It's an essential tool for data manipulation and transformation in R, especially when using the tidyverse set of packages, including `dplyr`.
+
+The compound assignment pipe `%<>%` is a convenient way to modify a variable in-place, saving you from having to create new variables for each step of your data manipulation. This can be particularly helpful for minimizing memory usage and simplifying code.
 
 ----
 
-## Other Key `dplyr` verbs 
+## other key `dplyr` verbs 
+
+### `group_by` + `summarize`
+
+#### Basic information
+
+The `group_by` and `summarize` functions in `dplyr` are often used in conjunction to perform grouped data analyses. The `group_by` function is used to group the rows of a data frame by one or multiple variables. Once the data is grouped, the `summarize` function can be used to perform summary calculations on each group, such as computing means, sums, counts, etc.
+
+[Syntax for `group_by`:]{.hi}
+
+```R
+grouped_data = group_by(data, variable1, variable2, ...)
+```
+
+Here, `data` is the data frame you're working with, and `variable1, variable2, ...` are the variables by which you want to group the data.
+
+[Syntax for `summarize`:]{.hi}
+
+```R
+summary_data = summarize(grouped_data, summary_var1 = function1(variable1), summary_var2 = function2(variable2), ...)
+```
+
+In this syntax, `grouped_data` is the grouped data frame, and `summary_var1`, `summary_var2`, ... are the new variables you're creating, which will contain the summary statistics for each group.
+
+#### [Ex.]{.ex}
+
+[Using `group_by` and `summarize` together]{.hi}
+
+Suppose you want to find the average departure delay for each carrier in the `flights` dataset:
+
+**Step 1:** Group the data by the carrier.
+
+```R
+grouped_flights = group_by(flights, carrier)
+```
+
+**Step 2:** Summarize to find the average departure delay for each group.
+
+```R
+summary_flights = summarize(grouped_flights, avg_dep_delay = mean(dep_delay, na.rm = TRUE))
+```
+
+#### Practice questions
+
+To deepen your understanding of `group_by` and `summarize`, try the following practice questions based on the `flights` dataset:
+
+1. Group the `flights` data by `month` and find the maximum departure delay for each month.
+  
+2. Group the `flights` data by `origin` (airport) and calculate the average air time for flights departing from each airport.
+  
+3. Group the `flights` data by both `carrier` and `month`. Find the minimum and maximum arrival delays for each group.
+
+These practice questions will help you understand how to use `group_by` and `summarize` for more complex data manipulations and analyses.
 
 ### `arrange` 
 
-### `group_by` and `summarize`
+#### Basic Information
+
+The `arrange` function in `dplyr` is used for sorting a data frame by one or multiple variables. This is particularly useful when you want to view your data in a specific order, which can also aid in data analysis and visualization.
+
+[Syntax:]{.hi}
+
+```R
+sorted_data = arrange(data, variable1, desc(variable2), ...)
+```
+
+Here, `data` is the data frame you're working with, and `variable1, variable2, ...` are the variables by which you want to sort the data. Use `desc()` if you want to sort a variable in descending order.
+
+#### [Ex.]{.ex}
+
+To demonstrate, let's again use the `flights` dataset. Suppose you want to sort the dataset by `month` and `day`.
+
+**Step 1:** Use `arrange` to sort the data.
+
+```R
+sorted_flights = arrange(flights, month, day)
+```
+
+You can also sort by multiple variables, and in mixed ascending and descending order. For example, to sort by `month` in ascending order and `dep_delay` in descending order:
+
+```R
+sorted_flights = arrange(flights, month, desc(dep_delay))
+```
+
+#### Practice questions
+
+To get hands-on experience with `arrange`, try these practice questions based on the `flights` dataset:
+
+1. Sort the `flights` dataset by `carrier` and `flight` number. What are the first 5 rows?
+
+2. Sort the `flights` dataset by total flight time (`air_time + taxi_in + taxi_out`). What are the 5 shortest flights?
+
+3. Sort the `flights` dataset first by `origin` airport and then by the average arrival delay, in ascending order for both variables. You'll need to use both `group_by` and `summarize` before using `arrange`.
+
+These practice questions should help you get a feel for how to use `arrange` to sort your data for different kinds of analyses.
+
+----
+
+# Advanced Practice
+
+1. Which month had the highest average departure delay? Exclude any records with missing or `NA` values for departure delay.
+    - Hint: Use `filter`, `group_by`, `summarize`, and `arrange`.
+
+2. For each airport of origin (`origin`), find the average air time. Return only the airport and the average air time.
+    - Hint: Use `group_by`, `summarize`, and `select`.
+
+3. Which carrier has the most flights for each month? 
+    - Hint: Use `group_by`, `summarize`, and `arrange`.
+
+4. For each day of the week (`day`), find the number of flights and the average departure delay. Exclude records with `NA` or missing values for departure delay.
+    - Hint: Use `filter`, `group_by`, and `summarize`.
+
+5. For the month of January, find the five days with the highest average arrival delay. 
+    - Hint: Use `filter`, `group_by`, `summarize`, and `arrange`.
+
+
 
 
