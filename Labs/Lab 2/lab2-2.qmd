@@ -40,7 +40,7 @@ The main packages in the tidyverse include:
   - `tibble`: A modern approach to data frames
   - `forcats`: For working with factors
 
-I have highlighted the first three above because they are the ones I (explicitly) use most. That is, I am looking at the help files for the functions within these packages most often. 
+The first three packages above are the ones I (*explicitly*) use most. That is, I am looking at the help files for the functions within these packages most often.
 
 ## Tidy Data
 The tidyverse has a specific philosophy regarding how data should be organized. A dataset is **_tidy_** provided that 
