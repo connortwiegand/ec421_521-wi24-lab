@@ -9,17 +9,6 @@ format:
     toc-depth: 3
     embed-resources: true
     # html-math-method: mathjax
-  #  revealjs:
-  #   theme: serif
-  #   preview-links: true
-  #   chalkboard: true
-  #   slide-number: true
-  #   menu:
-  #       side: right
-  #   scrollable: true
-  #   smaller: true
-  #   incremental: true
-  #   slide-level: 3
 
 editor:
    render-on-save: true
@@ -40,7 +29,7 @@ The main packages in the tidyverse include:
   - `tibble`: A modern approach to data frames
   - `forcats`: For working with factors
 
-I have highlighted the first three above because they are the ones I (explicitly) use most. That is, I am looking at the help files for the functions within these packages most often. 
+The first three packages above are the ones I (*explicitly*) use most. That is, I am looking at the help files for the functions within these packages most often. 
 
 ## Tidy Data
 The tidyverse has a specific philosophy regarding how data should be organized. A dataset is **_tidy_** provided that 
@@ -98,7 +87,7 @@ Suppose my current working directory is `cwiegand/Documents/School/EC 421/Homewo
 
 - I can directly access `hw-data.csv` by running `read_csv("hw-data.csv")`
 - However, R currently is only looking in this folder, so `read_csv("lab-data.csv")` won't work
-- However, we can always give an _absolute_ file path: `read_csv("/Documents/School/EC 421/Labs/lab-data.csv")`
+- However, we can always give an _absolute_ file path: `read_csv("~/Documents/School/EC 421/Labs/lab-data.csv")`^["~" expansion may be familiar to Mac users. If you are on windows, this would be similar to "C:/Users/<cwiegand>/" (however, there is currently no equivalent shorthand in windows)]
 
 ...but this isn't very convenient. So, instead, suppose I run 
 ```{r}
@@ -130,7 +119,7 @@ Depending on your operating system, you may have to pay special attention to sla
 
 You should have seen data importing in your first econometrics class. Here is a brief overview, using the `read_csv` function from the tidyverse.
 
-- We can use the `read_csv()` function from the `dplyr` package to read our data into R. The input to `read_csv()` is a quoted path to your file (either absolute or ) 
+- We can use the `read_csv()` function from the `readr` package to read our data into R. The input to `read_csv()` is a quoted path to your file (either absolute or ) 
 - By default, `read_csv()` has `col_names` set to `TRUE`, which means that the first entry of every column will be converted to that column's
 - `read_csv` only _reads_ the file, it doesn't store it. We have to assign the call in order to store it. For instance,
 ```{r}

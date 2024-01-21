@@ -3074,7 +3074,7 @@ vertical-align: -.125em;
 <li><code>tibble</code>: A modern approach to data frames</li>
 <li><code>forcats</code>: For working with factors</li>
 </ul>
-<p>I have highlighted the first three above because they are the ones I (explicitly) use most. That is, I am looking at the help files for the functions within these packages most often.</p>
+<p>The first three packages above are the ones I (<em>explicitly</em>) use most. That is, I am looking at the help files for the functions within these packages most often.</p>
 </section>
 <section id="tidy-data" class="level2">
 <h2 class="anchored" data-anchor-id="tidy-data">Tidy Data</h2>
@@ -3088,6 +3088,7 @@ vertical-align: -.125em;
 </section>
 <section id="importing-data-into-r" class="level1">
 <h1>Importing data into R</h1>
+<p>Before diving head first into the tidyverse, let’s review how to get data into R.</p>
 <section id="the-working-directory" class="level2">
 <h2 class="anchored" data-anchor-id="the-working-directory">The working directory</h2>
 <ul>
@@ -3097,7 +3098,7 @@ vertical-align: -.125em;
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;/home/cwiegand/Documents/ec421-wi24/Labs/Lab 2&quot;</code></pre>
+<pre><code>[1] &quot;/home/cwiegand/Documents/Teaching/ec421-wi24/Labs/Lab 2&quot;</code></pre>
 </div>
 </div></li>
 <li><p>You can set the working directory using <code>setwd(&lt;path-to-your-folder&gt;)</code></p></li>
@@ -3128,7 +3129,7 @@ vertical-align: -.125em;
 <ul>
 <li>I can directly access <code>hw-data.csv</code> by running <code>read_csv(&quot;hw-data.csv&quot;)</code></li>
 <li>However, R currently is only looking in this folder, so <code>read_csv(&quot;lab-data.csv&quot;)</code> won’t work</li>
-<li>However, we can always give an <em>absolute</em> file path: <code>read_csv(&quot;/Documents/School/EC 421/Labs/lab-data.csv&quot;)</code></li>
+<li>However, we can always give an <em>absolute</em> file path: <code>read_csv(&quot;~/Documents/School/EC 421/Labs/lab-data.csv&quot;)</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
 </ul>
 <p>…but this isn’t very convenient. So, instead, suppose I run</p>
 <div class="cell">
@@ -3174,7 +3175,7 @@ Tip
 </ul>
 <p>You should have seen data importing in your first econometrics class. Here is a brief overview, using the <code>read_csv</code> function from the tidyverse.</p>
 <ul>
-<li>We can use the <code>read_csv()</code> function from the <code>dplyr</code> package to read our data into R. The input to <code>read_csv()</code> is a quoted path to your file (either absolute or )</li>
+<li>We can use the <code>read_csv()</code> function from the <code>readr</code> package to read our data into R. The input to <code>read_csv()</code> is a quoted path to your file (either absolute or )</li>
 <li>By default, <code>read_csv()</code> has <code>col_names</code> set to <code>TRUE</code>, which means that the first entry of every column will be converted to that column’s</li>
 <li><code>read_csv</code> only <em>reads</em> the file, it doesn’t store it. We have to assign the call in order to store it. For instance,</li>
 </ul>
@@ -3184,7 +3185,13 @@ Tip
 </section>
 </section>
 
-</main>
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>“~” expansion may be familiar to Mac users. If you are on windows, this would be similar to “C:/Users/<cwiegand>/” (however, there is currently no equivalent shorthand in windows)<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></cwiegand></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
