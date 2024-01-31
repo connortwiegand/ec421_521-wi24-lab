@@ -1,0 +1,114 @@
+---
+title: 'Assignment #1 Part II'
+author: "Your Name"
+date: "1/28/24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Magrittr pipe help
+?`%>%`
+```
+
+```{r pacs}
+pacman::p_load(dplyr, magrittr)
+starwars
+```
+
+```{r}
+head(starwars)
+glimpse(starwars)
+```
+
+- A big part of tidyverse is `dplyr`. 
+
+- Two key verbs in dplyr are `select` and `filter`. 
+
+```{r select}
+starwars %>% select(., height, mass, hair_color)
+# Equivalent to:
+# select(starwars, height, mass, hair_color)
+sw_colors <- starwars %>% select(name, contains("color"))
+```
+
+```{r filter}
+starwars %>% filter(homeworld == "Tatooine")
+
+starwars %>% filter(height < 150 & (sex == "male" | sex == "none"))
+
+starwars %>% 
+   select(name, contains("color")) %>%
+   filter(eye_color == "brown")
+```
+
+`mutate`
+
+```{r mutate}
+
+bmi_fn <- function(ht, ms) {
+   bmi <- ms/(ht^2)
+   return(bmi)
+}
+
+sw_2 <- starwars %>% 
+   mutate(BMI = bmi_fn(ht = height, ms = mass))
+
+starwars %>% 
+   mutate(BMI = mass/(height^2)) %>% 
+   select(BMI)
+
+```
+
+`arrange`:
+
+```{r arrange}
+sw_2 %<>% arrange(species, height)
+# sw_2 <- sw_2 %>% arrange(species)
+
+sw_2 %>% filter(species == "Droid") %>% select(height)
+```
+
+`group_by` and `summarize`
+
+```{r others}
+sw.grouped <- starwars %>% 
+   group_by(species) 
+
+sum1 <- sw.grouped %>% 
+   summarize('avg_ht' = mean(height, na.rm = T))
+
+sum2 <- 
+   starwars %>% 
+   group_by(homeworld) %>% 
+   summarize('avg_mass' = mean(mass, na.rm=T))
+```
+
+```{r}
+starwars %>% 
+   mutate(has_hair = 
+             case_when(hair_color == "NA" ~ F,
+                       hair_color != "none" ~ T, 
+                       .default = F)
+          ) %>% 
+   select(has_hair)
+
+starwars %>% filter(is.na(hair_color))
+
+starwars %>% 
+   mutate(has_hair = 
+             case_when(is.na(hair_color) ~ F,
+                       hair_color == "none" ~ F, 
+                       .default = T)
+   ) %>% 
+   select(has_hair)
+
+
+```
+
+
+
+

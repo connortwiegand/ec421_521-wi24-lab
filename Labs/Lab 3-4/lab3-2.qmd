@@ -1,0 +1,264 @@
+---
+title: "Labs 3 & 4: Linear Regression and `ggplot2`"
+subtitle: "Part 2"
+author: "Connor Wiegand"
+format:
+  html:
+    theme: 
+      - flatly
+      - ../lab-style.scss
+    toc: true
+    toc-depth: 3
+    execute: 
+      # eval: false
+      warning: false
+      error: false
+    embed-resources: true
+    # html-math-method: mathjax
+knitr: 
+   opts_chunk: 
+      class-output: code-out
+      class-error: err-out
+      class-message: msg-out
+editor:
+   render-on-save: true
+---
+
+
+### Data
+Let's start by loading some data. The following will load the `mtcars` dataset into your workspace. You can see details by running the `?mtcars` command below. 
+
+```{r pacs-data, output=F}
+library(tidyverse)
+library(magrittr)
+data(mtcars)
+mtcars
+?mtcars
+```
+
+## Basic Visualization and Linear Regression
+Let's start by looking at the data. The `geom_point` function will help us plot simple points in the data. I want to look at MPG and weight:
+
+```{r}
+mtcars %>%
+   ggplot() +
+   geom_point(aes(x = wt, y = mpg)) +
+   labs(x = "Weight", y = "Miles Per Gallon", title = "MPG by Weight") 
+```
+
+It seems like there is a relationship here. Let's use linear regression to analyze it. 
+
+```{r}
+mpg_on_weight <- mtcars %>% lm(mpg ~ wt, data = .)
+mpg_on_weight
+```
+
+---
+
+There are a couple things we can do to this `lm` object to output it in a prettier and/or more usable format:
+
+- `summary()`
+   - this option outputs the results in a nice, verbose format
+
+```{r}
+mpg_on_weight %>% summary()
+```
+
+- `broom::tidy()`
+   - outputs a `tbl_df`, which may come in handy if we need to access parts of this model using tidy syntax. 
+
+```{r}
+mpg_on_weight %>% broom::tidy()
+```
+
+---
+
+Now that we have a model in hand, let's visualize it. I have outlined three different ways below:
+
+:::{.panel-tabset}
+#### Method 1
+
+First, let's take the original dataset, tack the fitted values from the model onto it, and call it something new:
+```{r}
+cars_df <- mtcars %>% mutate(fitted = mpg_on_weight$fitted.values)
+```
+
+Now, let's pipe this new data frame into a `ggplot` call with `geom_line`
+```{r}
+cars_df %>%
+   ggplot(aes(x = wt, y = mpg)) +
+   geom_point() +
+   geom_line(aes(y = fitted), col = "red")
+```
+
+#### Method 2
+
+In this example, we take the coefficients directly from the model. Note that this is not very `tidy` of us^[Typically, `tidy` syntax avoids using `$` and/or other data frames]
+```{r}
+mtcars %>%
+   ggplot(aes(x = wt, y = mpg)) +
+   geom_point() +
+   geom_abline(
+      intercept = mpg_on_weight$coefficients[1],
+      slope = mpg_on_weight$coefficients[2],
+      col = "red")
+```
+
+#### Method 3
+
+If all we care about is visualization (rather than actual data values), we can use `geom_smooth`:
+
+```{r}
+mtcars %>%
+   ggplot(aes(x = wt, y = mpg)) +
+   geom_point() +
+   geom_smooth(method = "lm", se = F, col ="red")
+```
+We can even visualize confidence intervals by leaving out `se = F`. I'll leave this for you to do. 
+
+:::
+
+::::{.callout-caution collapse="true"}
+Note the error produced here:
+```{r, message=T, error = T}
+mtcars %>%
+   ggplot() +
+   geom_point(aes(x = wt, y = mpg)) +
+   geom_smooth(method = "lm")
+```
+
+We specified the aesthetic mapping (`aes`) at the **geom_** level. When looking for aesthetics, `geoms` look for an `aes` mapping in the `ggplot()` level, but does not look elsewhere. 
+
+Therefore, we have to specify the mapping at the `ggplot` level, or give another aesthetic mapping (`aes`) call to `geom_smooth`
+::::
+
+## Further Analysis
+
+### Facets Example
+
+For the sake of exposure, here's an example that's a little extra:
+
+```{r}
+#| code-fold: true
+mtcars %>%
+   ggplot(aes(x = wt, y = mpg)) +
+   geom_point() +
+   geom_smooth(aes(col=as.factor(am)), method = 'lm', se = F) +
+   facet_wrap(~am, scales = "free_x",
+      labeller = labeller(
+         am = c("0" = "Auto",
+                "1" = "Manual")
+      ) #for this call specficially, my indentation is non-standard 
+   ) +
+   scale_color_manual(
+      name = "Automatic vs. Maunal", 
+      values = c("red", "blue"),
+      labels = c("Auto", "Man")
+   ) +
+   labs(
+      title = "Effect of weight on MPG, by Transmission",
+      x = "Weight (1000s lbs.)",
+      y = "Miles Per Gallon"
+   ) +
+   theme(legend.position = "bottom")
+```
+
+
+### Colors in and out of `aes`
+
+Compare the following code blocks and their respective outputs:
+
+:::{.panel-tabset}
+
+#### Inside AES
+
+```{r}
+mtcars %>%
+   ggplot() +
+   geom_point(aes(x = wt, y = mpg, col = as.factor(cyl)))
+```
+
+#### Outside AES
+```{r}
+mtcars %>%
+   ggplot() +
+   geom_point(aes(x = wt, y = mpg), col = mtcars$cyl)
+```
+
+:::
+
+- What I *don't* want you to worry about is the color scale and the `as.factor` call
+
+- What I **do** want you to notice:
+
+   - Outside AES, `geom_point` doesn't know what `cyl` is
+
+      - Therefore, we have to call `mtcars` *again*^[not very tidy of us...]
+
+   - Outside AES, we don't have a legend key
+
+      - [There is actually more to this than it may seem]{.red}
+
+#### Inside/Outside AES, Explained
+
+- [Crucially]{.red}, when you put something in "aes", it maps your varaible to a built-in "aesthetic" that `ggplot` knows. 
+
+- So, you can think of the colors, shapes, sizes, etc. inside `aes()` as their own layers/characteristics of the plot
+
+- On the other hand, colors (etc.) *outside* `aes` can be thought of as low-level options that we told a `geom` to use
+
+- This may seem minor right now. When you are on your own, make sure you are aware of whether things like `color`, `size`, `shape`, `fill` are inside or outside an `aes()` call
+
+### Residuals and Predicted Values
+If we wanted to look at residulas, there are a few things we can do:
+```{r, results="hold"}
+mpg_on_weight$residuals ## or
+lm.res <- mpg_on_weight %>% resid() 
+## these are the same
+```
+
+To do a quick-check for heteroskedasticity, we can plot the residuals
+```{r}
+cars_df %<>% mutate(resid = lm.res) 
+
+cars_df %>% 
+   ggplot() + 
+   geom_point(aes(x = wt, y = resid))
+
+## Looks good
+```
+
+Similarly, to look at predictions:
+```{r, results="hold"}
+mpg_on_weight$fitted.values ## or
+lm.res <- mpg_on_weight %>% resid() 
+## these are the same
+```
+
+However, another helpful function in the tidyverse is `broom`'s `augment()` function. It takes in a model, and outputs a data frame with the data used, fitted values, residuals, and more already baked in! 
+
+Let's Try it:
+```{r}
+lm.mod <- mpg_on_weight %>% broom::augment()
+lm.mod
+```
+
+Now, let's visualize the residual values for each point in the data:
+```{r}
+lm.mod %>%
+   ggplot(aes(x = wt, y = mpg)) +
+   geom_point() +
+   geom_smooth(method = "lm", se = F) +
+   geom_segment(aes(xend = wt, yend = .fitted), col = "red")
+```
+
+Since residuals are just the difference between actual and fitted values, we could also do
+
+```{r}
+lm.mod %>%
+   ggplot(aes(x = wt, y = mpg)) +
+   geom_point() +
+   geom_smooth(method = "lm", se = F) +
+   geom_segment(aes(xend = wt, yend = mpg - .resid), col = "darkgreen")
+
+```

@@ -5,7 +5,9 @@ $headings-font-weight: 400 !default;
 // $body-color:             !default;
 // $link-color: #81A1C1;
 $code-color: #4758AB;
-
+$theme-color: #18bc9c;
+$darker-theme: #006933;
+$dk-border: mix(#ecf0f1, #000, 90%);
 
 /*-- scss:rules --*/
 .ex {
@@ -56,9 +58,48 @@ a:not(:hover, .active) {
 }
 
 /*-- scss:function-defined rules --*/
-$color-list: red, blue, green;
+$color-list: red, blue, green, darkgreen;
 @each $col in $color-list {
    .#{$col} {
       color: $col;
+   }
+}
+
+.code-out {
+   border-left: 2px solid #18bc9c;
+   border-radius: 0;
+}
+
+.err-out {
+   border-left: 2px solid red;
+   border-radius: 0;
+   // color: red;
+}
+
+.msg-out {
+   border-left: 2px solid #4c566a;
+   color: #4c566a;
+   border-radius: 0;
+}
+
+.panel-tabset, .nav-tabs {
+   border-color: $dk-border;
+
+   .nav-link {
+
+      color: #9c9c9c;
+
+      &:hover {
+         color: $theme-color;
+      } 
+   }
+
+   .nav-link.active {
+      color: $darker-theme !important;
+      border-color: $dk-border $dk-border #fff !important;
+   }
+
+   .tab-content {
+      border-color: $dk-border;
    }
 }
