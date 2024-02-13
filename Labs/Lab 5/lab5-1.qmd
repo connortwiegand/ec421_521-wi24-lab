@@ -1,0 +1,179 @@
+---
+title: "Lab 5: Heteroskedasticity"
+# subtitle: "Part 2"
+author: Connor Wiegand (adapted from Andrew Dickinson)
+format:
+  html:
+    theme: 
+      - flatly
+      - ../lab-style.scss
+    toc: true
+    toc-depth: 3
+    execute: 
+      # eval: false
+      warning: false
+      error: false
+    embed-resources: true
+    # html-math-method: mathjax
+knitr: 
+   opts_chunk: 
+      class-output: code-out
+      class-error: err-out
+      class-message: msg-out
+# editor:
+#    render-on-save: true
+---
+
+# DGP
+
+```{r}
+library(tidyverse)
+
+set.seed(12345)
+n=1000
+data = tibble(
+  x=rnorm(n, 2, 1),
+  group=c(rep(0,n/2), rep(1,n/2)),
+  error = rnorm(n, 0, 1),
+  y_homo =  error,
+  y_hetero1= error*x,
+  y_hetero2= error*abs(x-2),
+  y_hetero3= error*(group+1)*3,  
+) 
+# Optional: Save the data to a CSV file
+#write_csv(data, file="Data_Heteroskedasticity.csv")
+```
+
+### Visualizing the Generated Data
+
+
+Visualization is a crucial step in understanding the data and the relationships among variables. Let's visualize the relationships between $x$ and different simulated dependent variables using `ggplot2`.
+
+::: {.panel-tabset}
+## `y_homo`
+
+```{r}
+ggplot(data=data, aes(x=x, y=y_homo)) +
+  geom_point()
+```
+
+## `y_hetero1`
+
+```{r}
+ggplot(data=data, aes(x=x, y=y_hetero1)) +
+  geom_point()
+```
+
+## `y_hetero2`
+
+```{r}
+ggplot(data=data, aes(x=x, y=y_hetero2)) +
+  geom_point()
+```
+
+## `y_hetero3`
+
+```{r}
+ggplot(data=data, aes(x=x, y=y_hetero3, color=factor(group))) +
+  geom_point(alpha=0.9) +
+  scale_color_manual(
+      values = viridisLite::viridis(2)
+   ) +
+  labs(
+    color = "Group"
+  )
+  theme(
+    legend.position = "bottom"
+  )
+```
+
+:::
+
+# Goldfeld-Quandt Test
+
+The Goldfeld-Quandt (GQ) test is a classical statistical procedure used to check for heteroskedasticity in a regression model. Heteroskedasticity, a violation of one of the Gauss-Markov assumptions, occurs when the variance of the error terms is not constant across observations. This test is particularly useful when the variances are believed to change at a particular point of a covariate or across groups. The [GQ test]{.hi} splits the data into different segments, performs separate regression analyses on these segments, and tests whether the variances of the residuals from these regressions are significantly different.
+
+## Goldfeld-Quandt Test in R
+
+1. **Sort the Data**:
+    - Arrange the data in ascending order based on the independent variable suspected to exhibit heteroskedasticity.
+    
+```r
+data = data %>%
+  arrange(x)
+```
+
+2. **Split the Data**:
+    - Divide the data into two or more segments. A common approach is to split it into thirds and discard the middle third.
+    
+```r
+first_third = nrow(data)/3
+third_third = floor((nrow(data)/3) * 2) + 2
+data_1 = data[1:first_third, ]
+data_2 = data[third_third:n, ]
+```
+
+3. **Run Separate Regressions**:
+    - Perform regression analyses on these segments separately.
+    
+```r
+fit1 = lm(y_hetero2 ~ x, data_1 )  %>% summary()
+fit2 = lm(y_hetero2 ~ x, data_2 )  %>% summary()
+```
+
+4. **Compute Residual Sum of Squares (RSS)**:
+    - Calculate the sum of squared residuals for each regression.
+    
+```r
+rss1 = sum(resid(fit1)^2)
+rss2 = sum(resid(fit2)^2)
+```
+
+5. **Conduct Hypothesis Testing**:
+    - Compare the variances of the residuals from these regressions using an F-test.
+    - The null hypothesis ($H_0$) is that the variances are equal (Homoskedasticity), against the alternative hypothesis ($H_1$) that they are not equal (Heteroskedasticity).
+    
+```r
+tstat = rss2/rss1
+pf(q = tstat, df1 = 333-1, df2 = 333-1, lower.tail = F)
+```
+
+The *GQ test* is a straightforward and intuitive method to test for heteroskedasticity, especially when there is a prior belief that the variance of errors may change at a particular point of a covariate.
+
+# White's Test
+
+White's Test is a statistical procedure that helps detect heteroskedasticity in a regression model. Unlike the Goldfeld-Quandt Test, White's Test does not require the data to be sorted, nor does it require the assumption that variances change at a particular point of a covariate. Instead, it's a general test for heteroskedasticity without specifying the form of heteroskedasticity.
+
+## White's Test in R
+
+1. **Run the Initial Regression**:
+    - Perform a regression analysis using the suspected model.
+    
+```r
+fit = lm(y_hetero2 ~ x, data)
+```
+
+2. **Compute Squared Residuals**:
+    - Obtain the residuals from the regression and square them.
+    
+```r
+data = data %>% mutate(resid = resid(fit)^2)
+```
+
+3. **Regress Squared Residuals on Original Independent Variable(s), Their Squares and Cross Products**:
+    - Perform a regression of the squared residuals on the original independent variable(s), their squares, and the cross products of the independent variables.
+    
+```r
+fit = lm(resid ~ x + I(x^2), data) %>% summary()
+```
+
+4. **Conduct Hypothesis Testing**:
+    - The test statistic is computed as $N \cdot R^2$ from the regression in step 3, where $N$ is the sample size and $R^2$ is the coefficient of determination from the regression.
+    - Under the null hypothesis of homoskedasticity, the test statistic follows a chi-square distribution with degrees of freedom equal to the number of regressors (excluding the constant term) in the regression in step 3.
+
+```r
+teststat = fit$r.squared * n
+pchisq(q = teststat, df = 2, lower.tail = F)
+```
+
+White's Test provides a non-specific approach to detect heteroskedasticity, making it a flexible option when the form of heteroskedasticity is unknown. It's a widely used test due to its generality and simplicity in implementation.
