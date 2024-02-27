@@ -48,7 +48,7 @@ h4 {
 
 .hi {
    font-weight: 600;
-   color: #4c566a
+   color: mix(#4c566a, #18bc9c, 50%);
 }
 
 a:not(:hover, .active) {

@@ -1,0 +1,284 @@
+---
+title: "Central Limit Theorem"
+author: Connor Wiegand
+format:
+  html:
+    theme: 
+      - flatly
+      - ../lab-style.scss
+    toc: true
+    toc-depth: 3
+    execute: 
+      # eval: false
+      warning: false
+      error: false
+    embed-resources: true
+    # html-math-method: mathjax
+knitr: 
+   opts_chunk: 
+      class-output: code-out
+      class-error: err-out
+      class-message: msg-out
+# editor:
+#    render-on-save: true
+---
+
+```{r}
+pacman::p_load(tidyverse, magrittr, cowplot)
+```
+
+# The central limit theorem
+
+## Theoretical Background
+
+:::{.callout-tip collapse="true"}
+### CLT
+
+> *Let* $x_1, x_2, \dots, x_n$ *be a random sample from a population with mean* $\mathop{\mathbb{E}}\left[ X \right] = \mu$ *and variance* $\text{Var}\left( X \right) = \sigma^2 < \infty$*, let* $\overline{X}$ *be the sample mean.*  *Then, as* $n\rightarrow \infty$*, the function* $\frac{\sqrt{n}\left(\overline{X}-\mu\right)}{S_x}$ *converges to a* [Normal Distribution]{.note} *with mean 0 and variance 1.* 
+:::
+
+The [Central Limit Theorem (CLT)]{.hi} is a fundamental principle in statistics that describes the behavior of the mean of a large number of independent, identically distributed (i.i.d.) random variables. The theorem states that as the sample size becomes larger, the distribution of the sample mean approaches a normal distribution, regardless of the shape of the population distribution.
+
+Mathematically, suppose we have a population with a mean $\mu$ and a finite variance $\sigma^2$. If we take a sample of size $n$ from this population, then the sample mean $\overline{X}$ will approximately follow a normal distribution with mean $\mu$ and standard deviation $\frac{\sigma}{\sqrt{n}}$ as $n$ becomes large. This can be expressed as:
+
+$$
+\overline{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)
+$$
+
+This theorem is significant because it enables us to make inferences about population parameters using sample statistics, even when the population distribution is not normally distributed.
+
+## Simulating the Central Limit Theorem in R
+
+To demonstrate the Central Limit Theorem through simulation, we will follow these steps:
+
+1. [Choose a Non-Normal Distribution]{.hi}: We'll start with a population distribution that is clearly not normal (e.g., a uniform or exponential distribution) to illustrate the power of the CLT.
+
+2. [Draw Samples and Compute Means]{.hi}: We'll draw multiple samples of increasing size from this population and compute the mean of each sample.
+
+3. [Visualize the Distribution of Sample Means]{.hi}: By plotting the distribution of these sample means, we'll observe how it becomes more bell-shaped and normal as the sample size increases, illustrating the CLT.
+
+### [Ex.]{.ex}
+
+Let's reiterate the concept of the [CLT]{.hi} in R! First, let's create a (non-normal) population distribution in R
+
+```{r}
+#| label: pop_distribution
+#| echo: true
+
+# Generate a random seed
+set.seed(42)
+
+# Set population size
+population_size = 10000
+
+# Generating a population from a uniform distribution
+pop_tbl = tibble(
+  value = runif(population_size, min = 0, max = 10) + rnorm(population_size, 0, 5)
+)
+
+glimpse(pop_tbl)
+```
+
+So we've created a population sample--now let's create a sampling distribution. We can do this using the `sample_n` function from `dplyr`.
+
+---
+
+#### Function notes: `sample_n`
+
+::: {.panel-tabset}
+
+##### [Description]{.hi}
+
+The `sample_n` function in R is used to randomly select a specified number of rows from a data frame or a `tibble`. This function is particularly useful for creating random subsets of a dataset, which can be essential for tasks like creating training and testing sets in machine learning, performing bootstrapping, or conducting random sampling for statistical analysis.
+
+Here's a brief description of its usage and syntax:
+
+- [Function]{.hi}: `sample_n()`
+- [Package]{.hi}: `dplyr` (Tidyverse)
+
+##### [Syntax]{.hi}
+```R
+sample_n(tbl, size, replace = FALSE, weight = NULL, .env = NULL)
+```
+
+- `tbl`: The data frame or tibble to sample from.
+- `size`: The number of rows to sample. If this number is greater than the number of rows in the `tbl` and `replace` is `FALSE`, it throws an error. If `replace` is `TRUE`, it allows for sampling with replacement.
+- `replace`: Logical argument indicating whether the sampling should be with replacement. Default is `FALSE`.
+- `weight`: An optional vector of probabilities for selecting each row. It must be of the same length as the number of rows in the `tbl`.
+- `.env`: An environment in which to evaluate the weights.
+
+##### [Ex.]{.ex}
+```{r}
+library(dplyr)
+
+data = tibble(
+  value = rnorm(n = 10, mean = 0, sd = 1)
+)
+
+# To randomly select 5 rows from the data frame
+sampled_data = sample_n(data, 5)
+
+sampled_data
+```
+
+:::
+
+---
+
+Now let's create a sampling tibble, `sample_tbl`:
+
+```{r}
+#| echo: true
+#| label: sampling_object
+
+# Set sample size
+sample_size = 50
+
+# Randomly pick sample from population
+sample_tbl = pop_tbl %>% 
+  sample_n(., sample_size) 
+
+sample_tbl
+```
+
+Now to take the mean, we can simply use `summarize` on the `sample_tbl`.
+
+```{r}
+sample_tbl %>% summarize(mu_hat = mean(value))
+```
+
+Now let's apply this code to better understand how the [CLT]{.hi} works in practice by incorporating a `for` loop. To restate, the [CLT]{.hi} we have a population, that is not normal. Let's visualize two properties of the theorem:
+
+1. If we take sample of this distribution (_or any distribution_), and find the mean, repeated samples of this population with approach a normal distribution. 
+2. As the sample size is increases, the speed to which we approach the normal distribution increases
+
+Let's write a `for` loop that repeatedly takes samples from the population distribution, take the mean, and plot them.
+
+```{r}
+#| label: sim
+
+# Create an empty tibble
+sim_tbl = tibble(mu_hat = numeric(0))
+
+# Simulate the process 100 times
+for (i in 1:20) {
+  # Sampling and computing the mean
+  sample_mean = pop_tbl %>% 
+                 sample_n(size = sample_size) %>% 
+                 summarize(mu_hat = mean(value)) %>% 
+                 pull(mu_hat)
+  
+  # Adding the result to the tibble
+  sim_tbl = bind_rows(sim_tbl, tibble(mu_hat = sample_mean))
+}
+```
+
+Now let's plot the result
+
+```{r}
+ggplot(sim_tbl, aes(mu_hat)) +
+   geom_histogram(binwidth = 0.25, color = "white", fill = "darkgreen")
+```
+
+The output looks fairly reasonable. However, to better visualize the two properties above, let's change the simulation to express the two properties more clearly.
+
+Now, lets vary the sampling distributions size and increase the number of times we run the sim
+
+```{r}
+#| label: real_sim_1
+#| echo: false
+#| cache: true
+#| message: false
+#| warning: false
+
+library(cowplot)
+
+
+sim_fun <- function(pop_tbl, sample_size, iter) {
+   # Simulation
+   sim_tbl <- parallel::mclapply(mc.cores = 12, X = 1:iter, FUN = function(x, size = sample_size) {
+      pop_tbl %>%
+         sample_n(size = sample_size) %>%
+         summarize(mu_hat = mean(value))
+   }) %>%
+      do.call(rbind, .) %>%
+      as_tibble()
+
+   p <- ggplot(data = sim_tbl, aes(mu_hat)) +
+      geom_histogram(binwidth = 0.05, color = "white", lwd = 0.2, fill = "#18bc9c") +
+      theme_minimal() +
+      labs(
+         caption = paste0("Sample means, iterations = ", iter, ", sample size = ", sample_size),
+         x = "Sample mean",
+         y = "Count"
+      ) +
+      coord_cartesian(xlim = c(2, 8))
+}
+
+# Defining parameter ranges
+sample_sizes <- c(5, 10, 25, 50, 100, 200, 1000)
+iter <- c(100, 1000, 10000)
+```
+
+```{r parallel_sim_block}
+#| label: real_sim_2
+#| echo: false
+#| cache: true
+#| message: false
+#| warning: false
+
+# Applying the function and storing results in a nested list
+grid <- lapply(X = iter, function(i) {
+   lapply(X = sample_sizes, function(s) {
+      sim_fun(sample_size = s, iter = i, pop_tbl = pop_tbl)
+   })
+})
+```
+
+```{r}
+#| label: real_sim_3
+#| echo: false
+#| cache: true
+#| message: false
+#| warning: false
+
+# Function to arrange plots for a specific iteration
+arrange_plots_for_iter <- function(plots_list, iter_index) {
+   plot_grid(plotlist = plots_list[[iter_index]], ncol = 1)
+}
+
+# Arrange the plots in a grid with each column having the same iteration
+grid_plot <- plot_grid(
+   arrange_plots_for_iter(grid, 1),
+   arrange_plots_for_iter(grid, 2),
+   arrange_plots_for_iter(grid, 3),
+   ncol = 3,
+   labels = c("Iter 10", "Iter 100", "Iter 1000")
+)
+
+```
+
+```{r} 
+#| echo: false
+#| fig.height: 16
+#| fig.width: 12
+
+
+# Display or save the final grid plot
+grid_plot
+```
+
+## Conclusion
+
+The [CLT]{.hi} is a fundamental concept in econometrics, providing critical insight into the behavior of sample means and the normality of distributions. While its theoretical importance is undisputed, the application of simulations offers a complementary and practical approach to understanding these concepts. Simulations allow practitioners to visualize the convergence of sample means to normality as outlined by the CLT, especially with large sample sizes. This empirical approach not only reinforces the theoretical understanding but also provides intuitive insights into the stochastic nature of econometric models. By manipulating parameters and observing outcomes, econometricians can explore and validate theoretical assumptions, gaining a more nuanced appreciation of the underlying statistical phenomena.
+
+Moreover, the combination of theory and simulation is invaluable in assessing the robustness of econometric models. Through simulated scenarios, the sensitivity and behavior of models under various conditions can be examined, which is particularly useful in policy analysis and forecasting. This dual approach not only deepens the understanding of econometric principles but also enhances the practitioner's ability to apply these principles in real-world situations. Ultimately, integrating theoretical knowledge with practical simulation exercises equips economists with a more comprehensive toolkit, bridging the gap between abstract concepts and empirical data analysis, and leading to more informed and reliable decision-making in the field.
+
+## Resources
+
+[3blue1brown](https://www.youtube.com/@3blue1brown) is a highly popular youtube channel which explains and visualizes concepts from various quantitative fields. If you would like a better understanding of the normal distribution, the [CLT]{.hi}, and how they related to convolutions and $\pi$, check out this series of videos:
+
+- [What is the the Central Limit Theorem?](https://www.youtube.com/watch?v=zeJD6dqJ5lo)
+- [A pretty reason why Gaussian + Gaussian = Gaussian](https://www.youtube.com/watch?v=d_qvLDhkg00)
+- [Why $\pi$ is in the normal distribution](https://www.youtube.com/watch?v=cy8r7WSuT1I)
+- [What is a convolution](https://www.youtube.com/watch?v=KuXjwB4LzSA)
