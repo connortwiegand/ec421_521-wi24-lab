@@ -1,5 +1,5 @@
 ---
-title: "Lab 6: Simulations"
+title: "Lab 7: Simulations"
 subtitle: "Application -- The Central Limit Theorem"
 author: Connor Wiegand
 format:
