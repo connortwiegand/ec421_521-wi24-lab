@@ -309,11 +309,11 @@ grid_plot <- plot_grid(
 grid_plot
 ```
 
-Again, here are the two properties we were hoping to analyze:
+Let's review:
 
 > 1. If we repeatdely take samples of a distribution, the sample means of will approach a normal distribution
 
-This is captured column-wise[^i.e., look at a fixed row in the table of graphs]: as we increase the number of iterations, what do you notice?
+This is captured column-wise^[i.e., look at a fixed row in the table of graphs]: as we increase the number of iterations, what do you notice?
 
 >   2. As the sample size increases, the speed to which we approach the normal distribution increases
 
