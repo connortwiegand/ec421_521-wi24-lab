@@ -1,5 +1,6 @@
 ---
 title: "Lab 6: Simulations"
+subtitle: "Background -- Simulations in R"
 author: Connor Wiegand
 format:
   html:

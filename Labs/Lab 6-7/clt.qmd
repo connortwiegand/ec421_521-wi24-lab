@@ -1,5 +1,6 @@
 ---
-title: "Central Limit Theorem"
+title: "Lab 6: Simulations"
+subtitle: "Application -- The Central Limit Theorem"
 author: Connor Wiegand
 format:
   html:
@@ -27,29 +28,32 @@ knitr:
 pacman::p_load(tidyverse, magrittr, cowplot)
 ```
 
-# The central limit theorem
+# The Central Limit Theorem
 
 ## Theoretical Background
 
-:::{.callout-tip collapse="true"}
-### CLT
+The [Central Limit Theorem (CLT)]{.hi} is a fundamental principle in statistics that describes the behavior of the mean of a large number of independent, identically distributed (i.i.d.) random variables. The theorem states that as the sample size becomes larger, the distribution of the sample mean approaches a normal distribution, regardless of the shape of the population distribution. The exact statement of the theorem is included below. 
 
-> *Let* $x_1, x_2, \dots, x_n$ *be a random sample from a population with mean* $\mathop{\mathbb{E}}\left[ X \right] = \mu$ *and variance* $\text{Var}\left( X \right) = \sigma^2 < \infty$*, let* $\overline{X}$ *be the sample mean.*  *Then, as* $n\rightarrow \infty$*, the function* $\frac{\sqrt{n}\left(\overline{X}-\mu\right)}{S_x}$ *converges to a* [Normal Distribution]{.note} *with mean 0 and variance 1.* 
+:::{.callout-note collapse="true"}
+### The Central Limit Theorem
+
+*Let* $x_1, x_2, \dots, x_n$ *be a random sample from a population with population mean* $\mathop{\mathbb{E}}\left[ X \right] = \mu$ *and population variance* $\text{Var}\left( X \right) = \sigma^2 < \infty$. *Let* $\bar{X}$ *be the sample mean. Then, as* $n\rightarrow \infty$*, the function* 
+$$\frac{\sqrt{n}\left(\bar{X}-\mu\right)}{S_x}$$
+
+ *converges to a* [<u>*Normal Distribution*</u>]{.hi} *with mean 0 and variance 1.* 
 :::
 
-The [Central Limit Theorem (CLT)]{.hi} is a fundamental principle in statistics that describes the behavior of the mean of a large number of independent, identically distributed (i.i.d.) random variables. The theorem states that as the sample size becomes larger, the distribution of the sample mean approaches a normal distribution, regardless of the shape of the population distribution.
 
-Mathematically, suppose we have a population with a mean $\mu$ and a finite variance $\sigma^2$. If we take a sample of size $n$ from this population, then the sample mean $\overline{X}$ will approximately follow a normal distribution with mean $\mu$ and standard deviation $\frac{\sigma}{\sqrt{n}}$ as $n$ becomes large. This can be expressed as:
-
+Suppose we have a population with mean $\mu$ and finite variance $\sigma^2$. If we take successive samples of size $n$ from this population, then the sample means ($\bar{X}$'s) will approximately follow a normal distribution with mean $\mu$ and standard deviation $\frac{\sigma}{\sqrt{n}}$. Mathematically, this is expressed as:
 $$
-\overline{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)
+\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)
 $$
 
-This theorem is significant because it enables us to make inferences about population parameters using sample statistics, even when the population distribution is not normally distributed.
+This theorem is significant because it enables us to make inferences about population parameters using sample statistics, even when the population is not normally distributed.
 
 ## Simulating the Central Limit Theorem in R
 
-To demonstrate the Central Limit Theorem through simulation, we will follow these steps:
+Let's reiterate the concept of the [CLT]{.hi} in R! To demonstrate the Central Limit Theorem through simulation, we will follow these steps:
 
 1. [Choose a Non-Normal Distribution]{.hi}: We'll start with a population distribution that is clearly not normal (e.g., a uniform or exponential distribution) to illustrate the power of the CLT.
 
@@ -57,9 +61,9 @@ To demonstrate the Central Limit Theorem through simulation, we will follow thes
 
 3. [Visualize the Distribution of Sample Means]{.hi}: By plotting the distribution of these sample means, we'll observe how it becomes more bell-shaped and normal as the sample size increases, illustrating the CLT.
 
-### [Ex.]{.ex}
+---
 
-Let's reiterate the concept of the [CLT]{.hi} in R! First, let's create a (non-normal) population distribution in R
+First, let's create a non-normal population distribution in R
 
 ```{r}
 #| label: pop_distribution
@@ -73,16 +77,17 @@ population_size = 10000
 
 # Generating a population from a uniform distribution
 pop_tbl = tibble(
-  value = runif(population_size, min = 0, max = 10) + rnorm(population_size, 0, 5)
+  value = 
+    runif(population_size, min = 0, max = 10) + 
+    rnorm(population_size, 0, 5)
 )
 
 glimpse(pop_tbl)
 ```
 
-So we've created a population sample--now let's create a sampling distribution. We can do this using the `sample_n` function from `dplyr`.
+So we've created a (**non-normal**) population. Now, let's create a sampling distribution. We can do this using the `sample_n` function from `dplyr`, which is outlined below. 
 
----
-
+::::::{.callout-note collapse="true"}
 #### Function notes: `sample_n`
 
 ::: {.panel-tabset}
@@ -123,9 +128,10 @@ sampled_data
 
 :::
 
----
+::::::
 
-Now let's create a sampling tibble, `sample_tbl`:
+
+We start by creating a sampling tibble, which we will call `sample_tbl`:
 
 ```{r}
 #| echo: true
@@ -141,26 +147,31 @@ sample_tbl = pop_tbl %>%
 sample_tbl
 ```
 
-Now to take the mean, we can simply use `summarize` on the `sample_tbl`.
+To take the mean, we can simply pass this `tbl` to `summarize`:
 
 ```{r}
 sample_tbl %>% summarize(mu_hat = mean(value))
 ```
 
-Now let's apply this code to better understand how the [CLT]{.hi} works in practice by incorporating a `for` loop. To restate, the [CLT]{.hi} we have a population, that is not normal. Let's visualize two properties of the theorem:
+We need a lot of means in order to plot something that looks like a normal distribution. That means we need a lot of samples. Let's implement a `for` loop to help us understand how the [CLT]{.hi} works. We want our loop to:
 
-1. If we take sample of this distribution (_or any distribution_), and find the mean, repeated samples of this population with approach a normal distribution. 
-2. As the sample size is increases, the speed to which we approach the normal distribution increases
+- Repeatedly take samples from the population distribution
+- Calculate the mean of the sample
+- Store the means somewhere so we can plot them
 
-Let's write a `for` loop that repeatedly takes samples from the population distribution, take the mean, and plot them.
+Speaking of plotting, there are two properties of the [CLT]{.hi} that I want to visualize:
+
+> 1. If we take sample of this distribution (or _any_ distribution), and find the mean, repeated sample means of this population will approach a normal distribution
+>
+>   2. As the sample size increases, the speed to which we approach the normal distribution increases
 
 ```{r}
 #| label: sim
 
-# Create an empty tibble
+# Create an empty tibble to store our sample means
 sim_tbl = tibble(mu_hat = numeric(0))
 
-# Simulate the process 100 times
+# Simulate the process 20 times
 for (i in 1:20) {
   # Sampling and computing the mean
   sample_mean = pop_tbl %>% 
@@ -173,16 +184,20 @@ for (i in 1:20) {
 }
 ```
 
-Now let's plot the result
+We have our sample means, now let's plot the result:
 
 ```{r}
 ggplot(sim_tbl, aes(mu_hat)) +
-   geom_histogram(binwidth = 0.25, color = "white", fill = "darkgreen")
+   geom_histogram(
+      binwidth = 0.25, 
+      color = "white", 
+      fill = "#18bc9c") +
+   theme_minimal()
 ```
 
-The output looks fairly reasonable. However, to better visualize the two properties above, let's change the simulation to express the two properties more clearly.
+The output looks fairly reasonable (normal...ish?). But, to better visualize the two properties highlighted above, let's beef up the scale of our simulation.
 
-Now, lets vary the sampling distributions size and increase the number of times we run the sim
+To capture (2.), I'm going to vary the sample size ($n$) and increase the number of times we run the sim. In the plot below, rows correspond to a fixed sample size (**n = **), while columns correspond a fixed number of samples (**iterations**). 
 
 ```{r}
 #| label: real_sim_1
@@ -196,36 +211,45 @@ library(cowplot)
 
 sim_fun <- function(pop_tbl, sample_size, iter) {
    # Simulation
-   sim_tbl <- parallel::mclapply(mc.cores = 12, X = 1:iter, FUN = function(x, size = sample_size) {
-      pop_tbl %>%
-         sample_n(size = sample_size) %>%
-         summarize(mu_hat = mean(value))
-   }) %>%
+   sim_tbl <- 
+      parallel::mclapply(
+         mc.cores = 14, 
+         X = 1:iter, 
+         FUN = function(x, size = sample_size) {
+            pop_tbl %>%
+               sample_n(size = sample_size) %>%
+               summarize(mu_hat = mean(value))
+         }) %>%
       do.call(rbind, .) %>%
       as_tibble()
 
    p <- ggplot(data = sim_tbl, aes(mu_hat)) +
-      geom_histogram(binwidth = 0.05, color = "white", lwd = 0.2, fill = "#18bc9c") +
+      geom_histogram(
+         binwidth = 0.05, 
+         color = "white", 
+         lwd = 0.2, 
+         fill = "#18bc9c"
+         ) +
       theme_minimal() +
       labs(
-         caption = paste0("Sample means, iterations = ", iter, ", sample size = ", sample_size),
+         caption = 
+            paste0(
+               "(",
+               iter, 
+               " iterations, sample size = ", 
+               sample_size,
+               ")"
+            ),
          x = "Sample mean",
          y = "Count"
-      ) +
-      coord_cartesian(xlim = c(2, 8))
+         ) +
+      coord_cartesian(xlim = c(2, 8)) +
+      theme(plot.caption = element_text(hjust = 0.45))
 }
 
 # Defining parameter ranges
 sample_sizes <- c(5, 10, 25, 50, 100, 200, 1000)
 iter <- c(100, 1000, 10000)
-```
-
-```{r parallel_sim_block}
-#| label: real_sim_2
-#| echo: false
-#| cache: true
-#| message: false
-#| warning: false
 
 # Applying the function and storing results in a nested list
 grid <- lapply(X = iter, function(i) {
@@ -236,7 +260,7 @@ grid <- lapply(X = iter, function(i) {
 ```
 
 ```{r}
-#| label: real_sim_3
+#| label: real_sim_2
 #| echo: false
 #| cache: true
 #| message: false
@@ -244,7 +268,20 @@ grid <- lapply(X = iter, function(i) {
 
 # Function to arrange plots for a specific iteration
 arrange_plots_for_iter <- function(plots_list, iter_index) {
-   plot_grid(plotlist = plots_list[[iter_index]], ncol = 1)
+   hor_lab = ""
+   if(iter_index == 1) { 
+      hor_lab = unlist(lapply(
+         "n = ", 
+         paste0, 
+         as.character(sample_sizes) 
+      ))
+   }
+   
+   plot_grid(plotlist = plots_list[[iter_index]], 
+             ncol = 1,
+             labels = hor_lab,
+             label_y = 0.875,
+             label_x = 0.05)
 }
 
 # Arrange the plots in a grid with each column having the same iteration
@@ -253,7 +290,11 @@ grid_plot <- plot_grid(
    arrange_plots_for_iter(grid, 2),
    arrange_plots_for_iter(grid, 3),
    ncol = 3,
-   labels = c("Iter 10", "Iter 100", "Iter 1000")
+   labels = c("100 Iterations", "1000 Iterations", "10000 Iterations"),
+   label_size = 18,
+   label_x = 0.32,
+   hjust = 0,
+   vjust = 1
 )
 
 ```
@@ -267,6 +308,16 @@ grid_plot <- plot_grid(
 # Display or save the final grid plot
 grid_plot
 ```
+
+Again, here are the two properties we were hoping to analyze:
+
+> 1. If we repeatdely take samples of a distribution, the sample means of will approach a normal distribution
+
+This is captured column-wise[^i.e., look at a fixed row in the table of graphs]: as we increase the number of iterations, what do you notice?
+
+>   2. As the sample size increases, the speed to which we approach the normal distribution increases
+
+Now compare across rows: what do you notice about increasing $n$?
 
 ## Conclusion
 
