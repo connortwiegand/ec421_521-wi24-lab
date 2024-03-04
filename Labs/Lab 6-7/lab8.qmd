@@ -9,8 +9,6 @@ format:
     toc: true
     toc-depth: 3
     execute: 
-      # eval: false
-      warning: false
       error: false
     embed-resources: true
     # html-math-method: mathjax
@@ -23,11 +21,12 @@ knitr:
 #    render-on-save: true
 ---
 
-# Time series
+
+# Background
 
 ## Introduction
 
-Time series data is a sequence of observations recorded at regular time intervals. This type of data is prevalent and allows us to study economic variables over time, such as GDP, inflation rates, stock prices, and many others.
+Time series data is a sequence of observations recorded at regular time intervals. This type of data is prevalent as it allows us to study economic variables over time, such as GDP, inflation rates, stock prices, and many others.
 
 Understanding time series data is crucial for predicting future trends, understanding past behaviors, and making informed decisions in the economic sphere.
 
@@ -40,31 +39,31 @@ Time series data is a sequence of data points collected or recorded at regular t
 - [Unemployment Rate Over Time]{.hi}: Helps understand the labor market dynamics.
 - [Stock Prices Over Time]{.hi}: Essential for financial analysis and investment strategies.
 
-### Regression in time series
+### Regression in Time Series
 Regression analysis in time series is used to understand relationships between different time-dependent variables. It involves using Ordinary Least Squares (OLS) to estimate the relationships. For example, you can regress GDP (as the dependent variable) on Bitcoin prices (as the independent variable) to study their relationship over time.
 
 #### Types of regression models in time series
 
 1. **Static Model**
-   - **Definition**: In a static model, the independent variables at a given time are used to predict the dependent variable at the same time.
-   - **Example**: Analyzing how today's GDP impacts today's Bitcoin price. This model assumes immediate effects of the independent variables on the dependent variable.
-   - **Economic Significance**: Useful for assessing immediate impacts and short-term analysis.
+   - [Definition:]{.hit} In a static model, the independent variables at a given time are used to predict the dependent variable at the same time.
+   - [Example:]{.hit} Analyzing how today's GDP impacts today's Bitcoin price. This model assumes immediate effects of the independent variables on the dependent variable.
+   - [Economic Significance:]{.hit} Useful for assessing immediate impacts and short-term analysis.
 
 2. **Dynamic Model**
-   - **Definition**: Dynamic models take into account not just the current values of variables but also their past values. They are crucial for understanding lag effects in economics.
-   - **Components**: May include variables like:
+   - [Definition:]{.hit} Dynamic models take into account not just the current values of variables but also their past values. They are crucial for understanding lag effects in economics.
+   - [Components:]{.hit} May include variables like:
      - X (independent variable) today and its past values (e.g., yesterday, last month).
      - Y (dependent variable) today and its past values.
-   - **Example**: Analyzing how today’s and yesterday’s GDP, along with yesterday's Bitcoin prices, affect today's Bitcoin price.
-   - **Economic Significance**: Helps in understanding the delayed effects of economic policies or market changes, vital for long-term economic planning and forecasting.
+   - [Example:]{.hit} Analyzing how today’s and yesterday’s GDP, along with yesterday's Bitcoin prices, affect today's Bitcoin price.
+   - [Economic Significance:]{.hit} Helps in understanding the delayed effects of economic policies or market changes, vital for long-term economic planning and forecasting.
 
-### Key points 
+#### Key points 
 
 - **Stationarity**: Ensuring that the time series is stationary (its properties do not change over time) is crucial for reliable statistical inference in regression analysis.
 - **Autocorrelation**: Time series data often exhibit autocorrelation, where current values are correlated with past values. This needs to be accounted for in the analysis.
 
 
-## Autocorrelation in Time Series
+### Autocorrelation in Time Series
 
 **Autocorrelation** refers to the correlation of a time series with its own past values. In econometrics, this concept is crucial because:
 
@@ -75,16 +74,26 @@ Regression analysis in time series is used to understand relationships between d
 - **Visual Inspection**: Plotting the residuals of a time series model can help in visually identifying patterns of autocorrelation.
 - **Statistical Tests**: Tests like the Durbin-Watson test are used to formally detect the presence of autocorrelation.
 
-## Example: Autoregressive (AR) Time Series and Plotting
+## Example: Generating an AR(1) Process in R
 
-### Generating an AR Time Series
-We can simulate an autoregressive (AR) process in R, where each value in the series is a function of its past values plus a random error term. An AR(1) model, for instance, can be represented as:
+### Background
+
+[Autoregressive (AR)]{.hi} models are fundamental to time series analysis. They are estimated via regressing a variable on one or more of its lagged values. We can simulate such processes in R, where each value in the series is a function of its past values plus a random error term. An AR(1) model, for instance, can be represented as:
 
 $$
-Y_t = c + \phi Y_{t-1} + \epsilon_t
+Y_t = c + \phi Y_{t-1} + \varepsilon_t
 $$
 
 where $Y_t$ is the value at time $t$, $c$ is a constant, $\phi$ is the coefficient of the previous time period's value, and $\epsilon_t$ is the error term.
+
+:::{.callout-note collapse="true"}
+#### General AR(p) model
+
+An autoregressive model of order $p$ --- or [AR(p)]{.hi} model --- takes the form: 
+$$
+Y_t = c + \sum_{i=1}^{p} (\phi_i Y_{t-i}) + \varepsilon_t 
+$$
+:::
 
 ### R Code for Simulation and Plotting
 ```{r}
@@ -128,6 +137,9 @@ ggplot(tbl, aes(x = year, y = value)) +
        y = "Value")
 ```
 
+------
+
+# Autocorrelation in the Real World
 
 ## Testing for Autocorrelation
 
@@ -179,7 +191,7 @@ ggplot(fed_tbl, aes(x = residuals, y = lagged_residuals)) +
 
 A positive correlation between residuals and lagged residuals suggests the presence of autocorrelation.
 
-### Hypothesis Testing for Autocorrelation
+### Detecting Autocorrelation (Hyp. Testing)
 
 #### Steps:
 1. Regress the dependent variable on the independent variable.
@@ -210,16 +222,15 @@ In this hypothesis test, a very small p-value indicates the rejection of the nul
 ## Dealing w/ autocorrelation
 
 ### Check for misspecification
-One way is to inspect whether the model is incorrectly specified. For example, maybe static model is NOT right. Maybe we want to lag Y and include that in our model. Maybe GDP of today maybe affected by GDP of yesterday...
+One way is to inspect whether the model is incorrectly specified. For example, maybe a static framework is NOT the right way to model our data. Maybe we want to lag Y and include that in our model. For instance, it is reasonable to think that the GDP of today is affected by GDP of yesterday...
 
-Now let's try Y on X and lag(Y)   
+Let's try to regress Y on X and lag(Y)   
 ```{r}
 lm(gdp ~ gov + lag(gdp), fed_tbl) %>% broom::tidy()
 ```
 
-The estimated coefficient is more reasonable.
+The estimated coefficient is more reasonable. What does  visual inspection reveal?
 
-Now, let's do some visual inspection...
 ```{r}
 fit = lm(gdp ~ gov + lag(gdp), fed_tbl) 
 fed_tbl$e = c(NA,resid(fit))
@@ -227,7 +238,7 @@ fed_tbl$lag_e = lag(fed_tbl$e)
 ggplot(fed_tbl, aes(x=e, y=lag_e)) + geom_point()
 ```
 
-The graph above does not provide much visual evidence of correlated residual. Now let's do some hypothesis testing...
+The graph above does not provide much visual evidence of correlated residuals across time. Let's see how robust this claim is to hypothesis testing:
 
 ```{r}
 ### Step 1. Regress Y on X
@@ -243,18 +254,23 @@ reg = lm(e ~ -1 + lag(e) + lag(e,2), fed_tbl)
 teststat = 120*summary(reg)$r.squared
 pchisq(teststat, 2, lower.tail=F)
 ```
-B/c p-val > 0.1, we fail to reject our null hypothesis. 
 
-In summary, by trying out a different model, we may have fixed the problem of autocorrelation.
+Because the $p-$value $> 0.1$, we fail to reject our null hypothesis of non-autocorrelation.
 
+### Summary
 
-## Feasible Generalized Least Squares (FGLS)
+- We had autocorrelation in our data
+- By specifying a different model -- namely, an autoregressive one -- we may have fixed the problem of autocorrelation 
+
+------
+
+# Feasible Generalized Least Squares (FGLS)
 
 Feasible Generalized Least Squares (FGLS) is an econometric technique used to address violations of the standard Ordinary Least Squares (OLS) assumptions, particularly homoskedasticity and no autocorrelation. It's particularly useful in time series data that exhibits autocorrelation. FGLS transforms the model to counteract the effects of autocorrelation, resulting in more efficient and reliable estimates. The process involves estimating the autocorrelation within the residuals of a preliminary OLS regression and then using this estimation to adjust the original model.
 
-### Steps to Conduct FGLS:
+## Steps to Conduct FGLS:
 
-#### 1. Determine the Transformation
+### 1 Determine the Transformation
    - Suppose you suspect an AR(1) process in your time series data. The transformation can be represented as:
 
 \begin{align*}
@@ -263,9 +279,9 @@ Feasible Generalized Least Squares (FGLS) is an econometric technique used to ad
 & \Rightarrow Y_t -\rho Y_{t-1} = \beta_0 (1-\rho) + \beta_1 (X_t - \rho X_{t-1})  \\
 \end{align*}
 
-where $\rho$ is the AR(1) parameter.
+where $\rho$ (*RHO*) is the AR(1) parameter.
 
-#### 2. Estimating the Autocorrelation Parameter ($\rho$)
+### 2 Estimating the Autocorrelation Parameter ($\rho$)
    - Perform a regression to find residuals and regress these on their lagged values (without an intercept) to estimate $\rho$.
 
 ```{r}
@@ -276,7 +292,7 @@ lm(e ~ lag(e) - 1, data = fed_tbl)
 fed_tbl$rho = 0.6384  # Example value from regression
 ```
 
-#### 3. Transform and Estimate the Model
+### 3 Transform and Estimate the Model
    - Apply the estimated autocorrelation parameter to transform the variables in your model and re-estimate it.
 
 ```{r}
@@ -285,7 +301,7 @@ fit_fgls = lm(I(gdp - lag(gdp, 1) * fed_tbl$rho) ~ -1 + I(1 + fed_tbl$rho) + I(g
 broom::tidy(fit_fgls)
 ```
 
-#### 4. Inspecting the Residuals
+### 4 Inspecting the Residuals
    - Inspect the residuals of the FGLS model to check for reduced autocorrelation.
 
 ```{r}
@@ -304,7 +320,9 @@ ggplot(fed_tbl, aes(x = residuals, y = lagged_residuals)) +
 The reduced pattern in the residuals plot after applying FGLS suggests a decrease in autocorrelation, indicating the effectiveness of the FGLS method.
 
 
-### Newey West Standard Errors
+## Standard Errors
+
+### Newey West
 
 You can use ``se="NW"`` option inside ``feols`` function to adjust your SEs.
 

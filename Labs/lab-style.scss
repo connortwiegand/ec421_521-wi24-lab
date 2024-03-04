@@ -31,9 +31,17 @@ h1:not(.title) {
    margin-left: 33%;
 }
 
+h2 {
+   text-align: right;
+   color: #18bc9c;
+   font-weight: normal;
+}
+
 h3 {
-   border-bottom: 1px solid #dee2e6;
+   border-bottom: 1px hidden #dee2e6;
    padding-bottom: .5rem;
+   font-style: italic;
+   font-weight: normal;
 }
 
 h4 {
@@ -44,6 +52,15 @@ h4 {
    &:has(.ex) {
       border-bottom: 1px solid #dee2e6;
    }
+}
+
+.u {
+   text-decoration: underline;
+}
+
+.hit {
+   color: mix(#4c566a, #18bc9c, 50%);
+   font-style: italic;
 }
 
 .hi {
