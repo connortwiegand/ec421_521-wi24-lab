@@ -31,7 +31,7 @@ h1:not(.title) {
    margin-left: 33%;
 }
 
-h2 {
+h2:not(#toc-title) {
    text-align: right;
    color: #18bc9c;
    font-weight: normal;

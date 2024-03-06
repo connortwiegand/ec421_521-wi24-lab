@@ -193,17 +193,39 @@ A positive correlation between residuals and lagged residuals suggests the prese
 
 ### Detecting Autocorrelation (Hyp. Testing)
 
+:::{.callout-note collapse="true"}
+#### The LM Test Statistic
+
+When testing for serial correlation in the residuals, we must be careful about what our hypotheses are. It is straightforward to say that the null is "no autocorrelation", but we will need to be more precise in order to compute LM and conduct our test. In order to formulate our null hypothesis, we must have some guess regarding the *order* of the autoregressive process that the error terms follow. 
+
+In general, if we think the errors follow an AR(p) process:
+
+$$
+u_{t} = \rho_1 u_{t-1} + \cdots + \rho_p u_{t-p} + \varepsilon_t 
+$$
+
+Then our null hypothesis is $H_{0}:\rho_1 = \cdots =\rho_p = 0$, and the LM test statistic is
+$$
+LM = (n-p)R^2
+$$
+
+using the appropriate $R^2$ (see below).
+:::
+
 #### Steps:
-1. Regress the dependent variable on the independent variable.
-2. Compute residuals.
-3. Regress residuals on their lagged values.
-4. Use the LM test statistic for hypothesis testing.
+1. Regress the standard model.
+2. Store residuals.
+3. Regress residuals on their lagged values (using a number of lagged values consistent with the null hypothesis).
+4. Store the $R^2$ from this regression.
+5. Using (4), compute the LM test statistic and test according to $\chi^{2}_p$
+
+Let's check for evidence of an $AR(2)$ error sequence in our data:
 
 ```{r}
 # Step 1: Regression
 fit = lm(gdp ~ gov, data = fed_tbl)
 
-# Step 2: Computing residuals
+# Step 2: Storing residuals
 fed_tbl = fed_tbl %>% 
   mutate(residuals = resid(fit))
 
@@ -212,8 +234,9 @@ lm_test = lm(residuals ~ -1 + lag(residuals) + lag(residuals, 2), data = fed_tbl
 
 # Step 4: LM test statistic
 n = nrow(fed_tbl)
-test_stat = n * summary(lm_test)$r.squared
-pchisq(test_stat, df = 2, lower.tail = FALSE)
+p = 2
+test_stat = (n - p) * summary(lm_test)$r.squared
+pchisq(test_stat, df = p, lower.tail = FALSE)
 ```
 
 In this hypothesis test, a very small p-value indicates the rejection of the null hypothesis of no autocorrelation, suggesting that an AR(2) process is present.
@@ -251,8 +274,10 @@ fed_tbl$e = c(NA,resid(fit))
 reg = lm(e ~ -1 + lag(e) + lag(e,2), fed_tbl)
 
 ## Step 4. Hypothesis testing using Chi-squared
-teststat = 120*summary(reg)$r.squared
-pchisq(teststat, 2, lower.tail=F)
+n = nrow(fed_tbl)
+p = 2
+teststat = (n - p) * summary(reg)$r.squared
+pchisq(teststat, p, lower.tail=F)
 ```
 
 Because the $p-$value $> 0.1$, we fail to reject our null hypothesis of non-autocorrelation.
@@ -260,7 +285,7 @@ Because the $p-$value $> 0.1$, we fail to reject our null hypothesis of non-auto
 ### Summary
 
 - We had autocorrelation in our data
-- By specifying a different model -- namely, an autoregressive one -- we may have fixed the problem of autocorrelation 
+- By specifying a different model -- namely, one with lags -- we may have fixed the problem of autocorrelation 
 
 ------
 
@@ -268,20 +293,26 @@ Because the $p-$value $> 0.1$, we fail to reject our null hypothesis of non-auto
 
 Feasible Generalized Least Squares (FGLS) is an econometric technique used to address violations of the standard Ordinary Least Squares (OLS) assumptions, particularly homoskedasticity and no autocorrelation. It's particularly useful in time series data that exhibits autocorrelation. FGLS transforms the model to counteract the effects of autocorrelation, resulting in more efficient and reliable estimates. The process involves estimating the autocorrelation within the residuals of a preliminary OLS regression and then using this estimation to adjust the original model.
 
-## Steps to Conduct FGLS:
+## Steps to Conduct FGLS
 
 ### 1 Determine the Transformation
-   - Suppose you suspect an AR(1) process in your time series data. The transformation can be represented as:
+   - Suppose you suspect an AR(1) process in your time series data:
+   
+   $$\varepsilon_t = \rho \varepsilon_{t-1} + \nu_t$$
+   
+   Our model can then be transformed as:
 
-\begin{align*}
-& Y_t = \beta_0 + \beta_1 X_t \\
-& \Rightarrow Y_t = \beta_0 (1-\rho) + \beta_1 (X_t - \rho X_{t-1}) + \rho Y_{t-1} \\
-& \Rightarrow Y_t -\rho Y_{t-1} = \beta_0 (1-\rho) + \beta_1 (X_t - \rho X_{t-1})  \\
-\end{align*}
+$$
+\begin{aligned}
+ &Y_t = \beta_0 + \beta_1 X_t + \varepsilon_t \\
+ \implies\quad &Y_t  - \rho Y_{t-1} = \beta_0+ \beta_1 X_t + \varepsilon_t - \rho Y_{t-1} \\
+% & = \beta_0 + \beta_1 X_t + \varepsilon_t - \rho (\beta_0 + \beta_1 X_{t-1} + \varepsilon_{t-1}) \\
+% & = \beta_0 (1-\rho) + \beta_1 (X_t - \rho X_{t-1}) + (\varepsilon_t - \rho \varepsilon_{t-1})  \\
+\implies\quad &Y_t  - \rho Y_{t-1} = \beta_0 (1-\rho) + \beta_1 (X_t - \rho X_{t-1}) + \nu_t
+\end{aligned}
+$$
 
-where $\rho$ (*RHO*) is the AR(1) parameter.
-
-### 2 Estimating the Autocorrelation Parameter ($\rho$)
+### 2 Estimate the Autocorrelation Parameter ($\rho$)
    - Perform a regression to find residuals and regress these on their lagged values (without an intercept) to estimate $\rho$.
 
 ```{r}
@@ -297,11 +328,16 @@ fed_tbl$rho = 0.6384  # Example value from regression
 
 ```{r}
 # Transforming and estimating the FGLS model
-fit_fgls = lm(I(gdp - lag(gdp, 1) * fed_tbl$rho) ~ -1 + I(1 + fed_tbl$rho) + I(gov - lag(gov, 1) * fed_tbl$rho), data = fed_tbl)
+fit_fgls = lm(
+   I(gdp - lag(gdp, 1) * fed_tbl$rho) ~ 
+      -1 + 
+      I(1 + fed_tbl$rho) + 
+      I(gov - lag(gov, 1) * fed_tbl$rho),
+   data = fed_tbl)
 broom::tidy(fit_fgls)
 ```
 
-### 4 Inspecting the Residuals
+### 4 Inspect the Residuals
    - Inspect the residuals of the FGLS model to check for reduced autocorrelation.
 
 ```{r}
@@ -324,12 +360,16 @@ The reduced pattern in the residuals plot after applying FGLS suggests a decreas
 
 ### Newey West
 
-You can use ``se="NW"`` option inside ``feols`` function to adjust your SEs.
+You can use ``se = "NW"`` option inside ``feols`` function to adjust your SEs.
 
 - Note: You need variables panel, which for time series data, you should just set it equal to 1 for everyone.
 
 ```{r}
 # pacman::p_load(fixest)
 fed_tbl$panel = 1
-fixest::feols(gdp~gov, fed_tbl, se="NW", panel.id=~panel+year)
+fixest::feols(gdp ~ gov,
+              fed_tbl,
+              se = "NW",
+              panel.id = ~panel+year
+              )
 ```
